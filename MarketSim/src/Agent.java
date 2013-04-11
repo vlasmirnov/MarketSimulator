@@ -1,6 +1,5 @@
 
 public class Agent {
 
-	private String agent;
+	private String name;
 }
-
