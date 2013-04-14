@@ -1,12 +1,16 @@
 
 public class Main {
 
-	/**
-	 * @param args
-	 */
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
 
+		Market market = new Market();
+		for(int a = 0; a < 50; a++)
+		{
+		System.out.println("Trading cycle " + a);
+		System.out.println("____________________");
+		market.update();
+		}
+		
 	}
 
 }
