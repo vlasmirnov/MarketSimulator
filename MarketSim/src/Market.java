@@ -23,10 +23,10 @@ public class Market {
 		
 		Agent testguy1 = new Agent(this, "Oliver", c1, 2);
 		Agent testguy2 = new Agent(this, "Edward", c1, 2);
-		Agent testguy3 = new Agent(this, "Stephen", c2, 3);
-		Agent testguy4 = new Agent(this, "Richard", c2, 3);
-		Agent testguy5 = new Agent(this, "Marcus", c3, 5);
-		Agent testguy6 = new Agent(this, "Alexander", c3, 8);
+		Agent testguy3 = new Agent(this, "Stephen", c2, 2);
+		Agent testguy4 = new Agent(this, "Richard", c2, 2);
+		Agent testguy5 = new Agent(this, "Marcus", c3, 2);
+		Agent testguy6 = new Agent(this, "Alexander", c3, 3);
 		
 		testagents = new Agent[]{testguy1, testguy2, testguy3, testguy4, testguy5, testguy6};
 		shuffledsellbids = new Bid[numcommodities][];
@@ -56,6 +56,11 @@ public class Market {
 		for(int a = 0; a < numcommodities; a++)
 		{
 			System.out.println(commodities[a].name + ": " + commodities[a].marketprice);
+		}
+		System.out.println("Current budgets:");
+		for(int a = 0; a < testagents.length; a++)
+		{
+			System.out.println(testagents[a].name + ": " + testagents[a].budget);
 		}
 		System.out.println("______________________");
 
@@ -108,19 +113,16 @@ public class Market {
 		{
 			int newmarketprice = 0;
 			int quantitysold = 0;
-			int highestbuy = 0;
 			Bid[] buylist = shuffledbuybids[a];
 			Bid[] selllist = shuffledsellbids[a];
 			for(int b = 0; b < buylist.length; b++)
 			{
 				Bid buybid = buylist[b];
-				if (buybid.price > highestbuy)
-				{
-					highestbuy = buybid.price;
-				}
+
 				for(int s = 0; s < selllist.length; s++)
 				{
 					Bid sellbid = selllist[s];
+
 					if(sellbid.quantity != 0 && buybid.price >= sellbid.price)
 					{
 						if(buybid.quantity >= sellbid.quantity)
@@ -153,7 +155,45 @@ public class Market {
 			}
 			else
 			{
-				newmarketprice = highestbuy;
+				int highestbuy = 0;
+				int lowestsell = Integer.MAX_VALUE;
+				if (buylist.length > 0)
+				{
+					for (int b = 0; b < buylist.length; b++)
+					{
+						Bid buybid = buylist[b];
+						if (buybid.price > highestbuy)
+						{
+							highestbuy = buybid.price;
+						}
+					}
+				}
+				if (selllist.length > 0)
+				{
+					for(int s = 0; s < selllist.length; s++)
+					{
+						Bid sellbid = selllist[s];
+						if (sellbid.price < lowestsell)
+						{
+							lowestsell = sellbid.price;
+						}
+					}
+				}
+				if (highestbuy > 0)
+				{
+					if(lowestsell < Integer.MAX_VALUE)
+						newmarketprice = (highestbuy + lowestsell) / 2;
+					else
+						newmarketprice = highestbuy;
+				}
+				else
+				{
+					if(lowestsell < Integer.MAX_VALUE)
+						newmarketprice = lowestsell;
+					else
+						newmarketprice = -1;
+				}
+
 			}
 			commodities[a].marketprice = newmarketprice;
 		}
@@ -163,6 +203,8 @@ public class Market {
 	
 	private void transaction(Agent buyer, Agent seller, Commodity c, int quantity, int money)
 	{
+		buyer.budget = buyer.budget - money;
+		seller.budget = seller.budget + money;
 		buyer.inventory[c.commoditynumber] = buyer.inventory[c.commoditynumber] + quantity;
 		seller.inventory[c.commoditynumber] = seller.inventory[c.commoditynumber] - quantity;
 		System.out.println(buyer.name + " bought " + quantity + " units of " + c.name + " from " + seller.name + " at " + money/quantity + " galactic intracredits each");
