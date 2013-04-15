@@ -21,12 +21,12 @@ public class Market {
 		
 		commodities = new Commodity[]{c1, c2, c3};
 		
-		Agent testguy1 = new Agent(this, "Oliver", c1, 4);
-		Agent testguy2 = new Agent(this, "Edward", c1, 3);
-		Agent testguy3 = new Agent(this, "Stephen", c2, 5);
-		Agent testguy4 = new Agent(this, "Richard", c2, 7);
-		Agent testguy5 = new Agent(this, "Marcus", c3, 7);
-		Agent testguy6 = new Agent(this, "Alexander", c3, 6);
+		Agent testguy1 = new Agent(this, "producer", "Oliver", c1, 4);
+		Agent testguy2 = new Agent(this, "producer", "Edward", c1, 3);
+		Agent testguy3 = new Agent(this, "producer", "Stephen", c2, 5);
+		Agent testguy4 = new Agent(this, "producer", "Richard", c2, 7);
+		Agent testguy5 = new Agent(this, "producer", "Marcus", c3, 7);
+		Agent testguy6 = new Agent(this, "producer", "Alexander", c3, 6);
 		
 		testagents = new Agent[]{testguy1, testguy2, testguy3, testguy4, testguy5, testguy6};
 		shuffledsellbids = new Bid[numcommodities][];
