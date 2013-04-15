@@ -9,7 +9,7 @@ public class Agent{
 	public int productionrate;
 	public double[] demands; 
 	public int[] inventory;
-	public int budget = 500;
+	public double budget = 500;
 
 	
 	public Agent(Market mkt, String n, Commodity m, int rate)
@@ -42,61 +42,74 @@ public class Agent{
 	{
 		for(int a = 0; a < inventory.length; a++)
 		{
-			if (inventory[a] > 0)
+			if (inventory[a] > 1)
 			{
-				inventory[a] = inventory[a] - 1;
+				inventory[a] = inventory[a] - 2;
 			}
 		}
 	}
 	private void placeBids()
 	{
+		int totalneeds = 0;
+		for (int a = 0; a < inventory.length; a++)
+		{
+			if(inventory[a] < 5)
+			{
+				totalneeds = totalneeds + 5 - inventory[a];
+			}
+		}
+		
 		for(int a = 0; a < inventory.length; a++)
 		{
-			int p = 0;
+			double p = 0;
 			Random r = new Random();
 			if(inventory[a] > 5)
 			{
 				int surplus = inventory[a] - 5;
 				if(market.commodities[a].marketprice == -1)
 				{
-					p = r.nextInt(100) + 1;
+					p = r.nextDouble() * 100;
 				}
 				else
 				{
-					p = 1 + (int) (market.commodities[a].marketprice / Math.pow(1.2, surplus - 3));
+					if(surplus > 5)
+					{
+						p = market.commodities[a].marketprice * Math.pow(1.2, 5 - 5);
+					}
+					else
+					{
+						p = market.commodities[a].marketprice * Math.pow(1.2, 5 - surplus);
+					}
 				}
-
+				if (p>0)
+				{
 				Bid b = new Bid(this, "sell", market.commodities[a], surplus, p);
 				System.out.println(b.agent.name + " wants to sell " + surplus + " units of " + market.commodities[a].name + " for " + p +  " galactic intracredits each.");
 				market.submitBid(b);
+				}
 			}
 			if(inventory[a] < 5)
 			{
 				int needed = 5 - inventory[a];
 				if(market.commodities[a].marketprice == -1)
 				{
-					p = r.nextInt(100) + 1;
+					p = r.nextDouble() * 100;
 				}
 				else
 				{
-					p = 1 + (int) (market.commodities[a].marketprice / Math.pow(1.2, 3 - needed));
+					p = market.commodities[a].marketprice * Math.pow(1.2, needed - 1);
 				}
-				if (p > budget * demands[a])
+				double spendcap = budget * needed / totalneeds;
+				if (p > spendcap)
 				{
-					p = (int) (budget * demands[a]);
+					p = spendcap;
 				}
 				if (p > 0)
 				{
-					int quantity = (int) (budget * demands[a] / p);
-					if (quantity > needed){
-						quantity = needed;
-					}
-					if (quantity > 0)
-					{
-					Bid b = new Bid(this, "buy", market.commodities[a], quantity, p);
-					System.out.println(b.agent.name + " wants to buy " + quantity + " units of " + market.commodities[a].name + " for " + p +  " galactic intracredits each.");
+					Bid b = new Bid(this, "buy", market.commodities[a], needed, p);
+					b.spendingcap = spendcap;
+					System.out.println(b.agent.name + " wants to buy " + needed + " units of " + market.commodities[a].name + ", and is willing to spend " + spendcap + " galactic intracredits.");
 					market.submitBid(b);	
-					}
 				}
 			}
 		}

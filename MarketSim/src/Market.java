@@ -21,12 +21,12 @@ public class Market {
 		
 		commodities = new Commodity[]{c1, c2, c3};
 		
-		Agent testguy1 = new Agent(this, "Oliver", c1, 2);
-		Agent testguy2 = new Agent(this, "Edward", c1, 2);
-		Agent testguy3 = new Agent(this, "Stephen", c2, 2);
-		Agent testguy4 = new Agent(this, "Richard", c2, 2);
-		Agent testguy5 = new Agent(this, "Marcus", c3, 2);
-		Agent testguy6 = new Agent(this, "Alexander", c3, 3);
+		Agent testguy1 = new Agent(this, "Oliver", c1, 4);
+		Agent testguy2 = new Agent(this, "Edward", c1, 3);
+		Agent testguy3 = new Agent(this, "Stephen", c2, 5);
+		Agent testguy4 = new Agent(this, "Richard", c2, 7);
+		Agent testguy5 = new Agent(this, "Marcus", c3, 7);
+		Agent testguy6 = new Agent(this, "Alexander", c3, 6);
 		
 		testagents = new Agent[]{testguy1, testguy2, testguy3, testguy4, testguy5, testguy6};
 		shuffledsellbids = new Bid[numcommodities][];
@@ -111,7 +111,7 @@ public class Market {
 		
 		for(int a = 0; a < numcommodities; a++)
 		{
-			int newmarketprice = 0;
+			double newmarketprice = 0;
 			int quantitysold = 0;
 			Bid[] buylist = shuffledbuybids[a];
 			Bid[] selllist = shuffledsellbids[a];
@@ -125,26 +125,48 @@ public class Market {
 
 					if(sellbid.quantity != 0 && buybid.price >= sellbid.price)
 					{
-						if(buybid.quantity >= sellbid.quantity)
-							{
-							transaction(buybid.agent, sellbid.agent, sellbid.commodity, sellbid.quantity, sellbid.quantity * sellbid.price);
-							buybid.quantity = buybid.quantity - sellbid.quantity;
-							sellbid.quantity = 0;
-							quantitysold = quantitysold + sellbid.quantity;
-							newmarketprice = newmarketprice + sellbid.quantity * sellbid.price;
-							if(buybid.quantity == 0)
-							{
-								break;
-							}
+						int maxbuyammount = (int)Math.ceil((Math.log(sellbid.price * 1.0 / buybid.price) / Math.log(1/1.2))) + 1;
+						int maxbuyammount2 = (int) (buybid.spendingcap / sellbid.price);
+						maxbuyammount = Math.min(maxbuyammount, maxbuyammount2);
+						int buyammount = 0;
+						if(maxbuyammount >= sellbid.quantity)
+						{
+							buyammount = buybid.quantity;
 						}
 						else
 						{
-							transaction(buybid.agent, sellbid.agent, sellbid.commodity, buybid.quantity, buybid.quantity * sellbid.price);
-							sellbid.quantity = sellbid.quantity - buybid.quantity;
-							buybid.quantity = 0;
-							quantitysold = quantitysold + buybid.quantity;
-							newmarketprice = newmarketprice + buybid.quantity * sellbid.price;
-							break;
+							buyammount = maxbuyammount;
+						}
+						if(buyammount > 0)
+						{
+							if(buyammount >= sellbid.quantity)
+								{
+								transaction(buybid.agent, sellbid.agent, sellbid.commodity, sellbid.quantity, sellbid.quantity * sellbid.price);
+								buybid.spendingcap = buybid.spendingcap - sellbid.quantity * sellbid.price;
+								buybid.price = buybid.price * Math.pow((1 / 1.2), sellbid.quantity);
+								quantitysold = quantitysold + sellbid.quantity;
+								newmarketprice = newmarketprice + sellbid.quantity * sellbid.price;
+								buybid.quantity = buybid.quantity - sellbid.quantity;
+								sellbid.quantity = 0;
+								if(buybid.quantity == 0)
+								{
+									break;
+								}
+							}
+							else
+							{
+								transaction(buybid.agent, sellbid.agent, sellbid.commodity, buyammount, buyammount * sellbid.price);
+								buybid.spendingcap = buybid.spendingcap - buyammount * sellbid.price;
+								buybid.price = buybid.price * Math.pow((1 / 1.2), buyammount);
+								quantitysold = quantitysold + buyammount;
+								newmarketprice = newmarketprice + buyammount * sellbid.price;
+								sellbid.quantity = sellbid.quantity - buyammount;
+								buybid.quantity = buybid.quantity - buyammount;
+								if(buybid.quantity == 0)
+								{
+									break;
+								}
+							}
 						}
 					}
 				}
@@ -155,8 +177,8 @@ public class Market {
 			}
 			else
 			{
-				int highestbuy = 0;
-				int lowestsell = Integer.MAX_VALUE;
+				double highestbuy = 0;
+				double lowestsell = Double.MAX_VALUE;
 				if (buylist.length > 0)
 				{
 					for (int b = 0; b < buylist.length; b++)
@@ -181,14 +203,14 @@ public class Market {
 				}
 				if (highestbuy > 0)
 				{
-					if(lowestsell < Integer.MAX_VALUE)
+					if(lowestsell < Double.MAX_VALUE)
 						newmarketprice = (highestbuy + lowestsell) / 2;
 					else
 						newmarketprice = highestbuy;
 				}
 				else
 				{
-					if(lowestsell < Integer.MAX_VALUE)
+					if(lowestsell < Double.MAX_VALUE)
 						newmarketprice = lowestsell;
 					else
 						newmarketprice = -1;
@@ -201,7 +223,7 @@ public class Market {
 		
 	}
 	
-	private void transaction(Agent buyer, Agent seller, Commodity c, int quantity, int money)
+	private void transaction(Agent buyer, Agent seller, Commodity c, int quantity, double money)
 	{
 		buyer.budget = buyer.budget - money;
 		seller.budget = seller.budget + money;

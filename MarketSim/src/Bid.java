@@ -5,9 +5,10 @@ public class Bid {
 	public String type;
 	public Commodity commodity;
 	public int quantity;
-	public int price;
+	public double price;
+	public double spendingcap;
 	
-	public Bid(Agent a, String t, Commodity c, int q, int p)
+	public Bid(Agent a, String t, Commodity c, int q, double p)
 	{
 		agent = a;
 		type = t;
