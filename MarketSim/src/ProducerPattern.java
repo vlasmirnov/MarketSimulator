@@ -4,6 +4,7 @@ import java.util.Random;
 public class ProducerPattern extends TradingPattern{
 
 	private Agent agent;
+	private double marginalscalefactor = 1.2;
 	
 	public ProducerPattern(Agent a) {
 		agent = a;
@@ -52,11 +53,11 @@ public class ProducerPattern extends TradingPattern{
 				{
 					if(surplus > 5)
 					{
-						p = agent.market.commodities[a].marketprice * Math.pow(1.2, 5 - 5);
+						p = agent.market.commodities[a].marketprice;
 					}
 					else
 					{
-						p = agent.market.commodities[a].marketprice * Math.pow(1.2, 5 - surplus);
+						p = agent.market.commodities[a].marketprice * Math.pow(marginalscalefactor, 5 - surplus);
 					}
 				}
 				if (p>0)
@@ -75,7 +76,7 @@ public class ProducerPattern extends TradingPattern{
 				}
 				else
 				{
-					p = agent.market.commodities[a].marketprice * Math.pow(1.2, needed - 1);
+					p = agent.market.commodities[a].marketprice * Math.pow(marginalscalefactor, needed - 1);
 				}
 				double spendcap = agent.budget * needed / totalneeds;
 				if (p > spendcap)
@@ -86,6 +87,7 @@ public class ProducerPattern extends TradingPattern{
 				{
 					Bid b = new Bid(agent, "buy", agent.market.commodities[a], needed, p);
 					b.spendingcap = spendcap;
+					b.marginalscalefactor = marginalscalefactor;
 					System.out.println(b.agent.name + " wants to buy " + needed + " units of " + agent.market.commodities[a].name + ", and is willing to spend " + spendcap + " galactic intracredits.");
 					agent.market.submitBid(b);	
 				}

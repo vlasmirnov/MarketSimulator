@@ -7,6 +7,7 @@ public class Bid {
 	public int quantity;
 	public double price;
 	public double spendingcap;
+	public double marginalscalefactor;
 	
 	public Bid(Agent a, String t, Commodity c, int q, double p)
 	{
