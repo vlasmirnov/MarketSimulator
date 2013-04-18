@@ -125,7 +125,7 @@ public class Market {
 
 					if(sellbid.quantity != 0 && buybid.price >= sellbid.price)
 					{
-						int maxbuyammount = (int)Math.ceil((Math.log(sellbid.price * 1.0 / buybid.price) / Math.log(1/1.2))) + 1;
+						int maxbuyammount = (int)Math.ceil((Math.log(sellbid.price * 1.0 / buybid.price) / Math.log(1/buybid.marginalscalefactor))) + 1;
 						int maxbuyammount2 = (int) (buybid.spendingcap / sellbid.price);
 						maxbuyammount = Math.min(maxbuyammount, maxbuyammount2);
 						int buyammount = 0;
@@ -143,7 +143,7 @@ public class Market {
 								{
 								transaction(buybid.agent, sellbid.agent, sellbid.commodity, sellbid.quantity, sellbid.quantity * sellbid.price);
 								buybid.spendingcap = buybid.spendingcap - sellbid.quantity * sellbid.price;
-								buybid.price = buybid.price * Math.pow((1 / 1.2), sellbid.quantity);
+								buybid.price = buybid.price * Math.pow((1 / buybid.marginalscalefactor), sellbid.quantity);
 								quantitysold = quantitysold + sellbid.quantity;
 								newmarketprice = newmarketprice + sellbid.quantity * sellbid.price;
 								buybid.quantity = buybid.quantity - sellbid.quantity;
@@ -157,7 +157,7 @@ public class Market {
 							{
 								transaction(buybid.agent, sellbid.agent, sellbid.commodity, buyammount, buyammount * sellbid.price);
 								buybid.spendingcap = buybid.spendingcap - buyammount * sellbid.price;
-								buybid.price = buybid.price * Math.pow((1 / 1.2), buyammount);
+								buybid.price = buybid.price * Math.pow((1 / buybid.marginalscalefactor), buyammount);
 								quantitysold = quantitysold + buyammount;
 								newmarketprice = newmarketprice + buyammount * sellbid.price;
 								sellbid.quantity = sellbid.quantity - buyammount;
