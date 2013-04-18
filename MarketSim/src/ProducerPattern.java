@@ -3,49 +3,33 @@ import java.util.Random;
 
 public class ProducerPattern extends TradingPattern{
 
-	private Agent agent;
-	private double marginalscalefactor = 1.2;
-	
-	public ProducerPattern(Agent a) {
-		agent = a;
-	}
+	private double marginalScaleFactor = 1.2;
 
 	
-	public void produce()
-	{
-		agent.inventory[agent.makes.commoditynumber] = agent.inventory[agent.makes.commoditynumber] + agent.productionrate;
+	public ProducerPattern() {
+
 	}
-	
-	public void consume()
-	{
-		for(int a = 0; a < agent.inventory.length; a++)
-		{
-			if (agent.inventory[a] > 1)
-			{
-				agent.inventory[a] = agent.inventory[a] - 2;
-			}
-		}
-	}
-	
+
 	public void placeBids()
 	{
 		int totalneeds = 0;
-		for (int a = 0; a < agent.inventory.length; a++)
+		for (Commodity commodity : agent.inventory.keySet())
 		{
-			if(agent.inventory[a] < 5)
+			if(agent.inventory.get(commodity) < 5)
 			{
-				totalneeds = totalneeds + 5 - agent.inventory[a];
+				totalneeds = totalneeds + 5 - agent.inventory.get(commodity);
 			}
 		}
-		
-		for(int a = 0; a < agent.inventory.length; a++)
+
+
+        for (Commodity commodity : agent.inventory.keySet())
 		{
 			double p = 0;
 			Random r = new Random();
-			if(agent.inventory[a] > 5)
+			if(agent.inventory.get(commodity) > 5)
 			{
-				int surplus = agent.inventory[a] - 5;
-				if(agent.market.commodities[a].marketprice == -1)
+				int surplus = agent.inventory.get(commodity) - 5;
+				if(commodity.marketprice == -1)
 				{
 					p = r.nextDouble() * 100;
 				}
@@ -53,30 +37,30 @@ public class ProducerPattern extends TradingPattern{
 				{
 					if(surplus > 5)
 					{
-						p = agent.market.commodities[a].marketprice;
+						p = commodity.marketprice;
 					}
 					else
 					{
-						p = agent.market.commodities[a].marketprice * Math.pow(marginalscalefactor, 5 - surplus);
+						p = commodity.marketprice * Math.pow(marginalScaleFactor, 5 - surplus);
 					}
 				}
 				if (p>0)
 				{
-				Bid b = new Bid(agent, "sell", agent.market.commodities[a], surplus, p);
-				System.out.println(b.agent.name + " wants to sell " + surplus + " units of " + agent.market.commodities[a].name + " for " + (int)p +  " galactic intracredits each.");
-				agent.market.submitBid(b);
+				Bid b = new Bid(agent, BidType.SELL, commodity, surplus, p);
+				System.out.println(b.agent.name + " wants to sell " + surplus + " units of " + commodity.name + " for " + p +  " galactic intracredits each.");
+				agent.market.acceptBid(b);
 				}
 			}
-			if(agent.inventory[a] < 5)
+			if(agent.inventory.get(commodity) < 5)
 			{
-				int needed = 5 - agent.inventory[a];
-				if(agent.market.commodities[a].marketprice == -1)
+				int needed = 5 - agent.inventory.get(commodity);
+				if(commodity.marketprice == -1)
 				{
 					p = r.nextDouble() * 100;
 				}
 				else
 				{
-					p = agent.market.commodities[a].marketprice * Math.pow(marginalscalefactor, needed - 1);
+					p = commodity.marketprice * Math.pow(marginalScaleFactor, needed - 1);
 				}
 				double spendcap = agent.budget * needed / totalneeds;
 				if (p > spendcap)
@@ -85,11 +69,11 @@ public class ProducerPattern extends TradingPattern{
 				}
 				if (p > 0)
 				{
-					Bid b = new Bid(agent, "buy", agent.market.commodities[a], needed, p);
+					Bid b = new Bid(agent, BidType.BUY, commodity, needed, p);
 					b.spendingcap = spendcap;
-					b.marginalscalefactor = marginalscalefactor;
-					System.out.println(b.agent.name + " wants to buy " + needed + " units of " + agent.market.commodities[a].name + ", and is willing to spend " + (int)spendcap + " galactic intracredits.");
-					agent.market.submitBid(b);	
+					b.marginalscalefactor = marginalScaleFactor;
+					System.out.println(b.agent.name + " wants to buy " + needed + " units of " + commodity.name + ", and is willing to spend " + spendcap + " galactic intracredits.");
+					agent.market.acceptBid(b);
 				}
 			}
 		}

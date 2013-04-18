@@ -1,40 +1,38 @@
-import java.util.Random;
-
+import java.util.HashMap;
 
 public class Agent{
-
-	private TradingPattern tradingpattern;
+    private TradingPattern tradingPattern;
 	public Market market;
 	public String name;
-	public Commodity makes;
-	public int productionrate;
-	public int[] inventory;
-	public double budget = 500;
-	public double sallary;
-	
-	public Agent(Market mkt, String pattern, String n, Commodity m, int rate, double sallary)
+	public Commodity commodityProduced;
+	public int productionRate;
+    public int consumptionRate;
+    public HashMap<Commodity, Integer> inventory;
+	public double budget;
+
+	public Agent(Market market, TradingPattern tradingPattern, String name, Commodity commodityProduced, Integer productionRate, Integer consumptionRate, Double budget)
 	{
+		this.market = market;
+		this.name = name;
+        this.productionRate = productionRate;
+        this.consumptionRate = consumptionRate;
+        this.commodityProduced = commodityProduced;
+        this.budget = budget;
 
-		market = mkt;
-		name = n;
-		makes = m;
-		productionrate = rate;
-		sallary = this.sallary;
-		inventory = new int[market.commodities.length];
-		
-		if(pattern.equals("producer"))
-			tradingpattern = new ProducerPattern(this);
-		if(pattern.equals("consumer"))
-			tradingpattern = new TradingPattern(this, "consumer");
-		//else
-			//tradingpattern = new TradingPattern(this, "trader");
+		inventory = new HashMap<Commodity, Integer>();
 
+        for (Commodity commodity : market.commodities){
+            inventory.put(commodity, 0);
+        }
+
+        this.tradingPattern = tradingPattern;
+        this.tradingPattern.agent = this;
 	}
 	public void update()
 	{
-		tradingpattern.consume();
-		tradingpattern.produce();
-		tradingpattern.placeBids();
+		tradingPattern.consume();
+		tradingPattern.produce();
+		tradingPattern.placeBids();
 	}
 
 	

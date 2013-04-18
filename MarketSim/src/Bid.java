@@ -2,17 +2,17 @@
 public class Bid {
 
 	public Agent agent;
-	public String type;
+	public BidType type;
 	public Commodity commodity;
 	public int quantity;
 	public double price;
 	public double spendingcap;
 	public double marginalscalefactor;
 	
-	public Bid(Agent a, String t, Commodity c, int q, double p)
+	public Bid(Agent agent, BidType type, Commodity c, int q, double p)
 	{
-		agent = a;
-		type = t;
+		this.agent = agent;
+		this.type = type;
 		commodity = c;
 		quantity = q;
 		price = p;
