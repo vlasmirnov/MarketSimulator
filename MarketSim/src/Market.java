@@ -21,14 +21,16 @@ public class Market {
 		
 		commodities = new Commodity[]{c1, c2, c3};
 		
-		Agent testguy1 = new Agent(this, "producer", "Oliver", c1, 4);
-		Agent testguy2 = new Agent(this, "producer", "Edward", c1, 3);
-		Agent testguy3 = new Agent(this, "producer", "Stephen", c2, 5);
-		Agent testguy4 = new Agent(this, "producer", "Richard", c2, 7);
-		Agent testguy5 = new Agent(this, "producer", "Marcus", c3, 7);
-		Agent testguy6 = new Agent(this, "producer", "Alexander", c3, 6);
+		Agent testguy1 = new Agent(this, "producer", "Oliver", c1, 4, 0);
+		Agent testguy2 = new Agent(this, "producer", "Edward", c1, 3, 0);
+		Agent testguy3 = new Agent(this, "producer", "Stephen", c2, 5, 0);
+		Agent testguy4 = new Agent(this, "producer", "Richard", c2, 7, 0);
+		Agent testguy5 = new Agent(this, "producer", "Marcus", c3, 7, 0);
+		Agent testguy6 = new Agent(this, "producer", "Alexander", c3, 6, 0);
+		Agent testguy7 = new Agent(this, "consumer", "John", c1, 0, 200);
+		Agent testguy8 = new Agent(this, "consumer", "Doe", c2, 0, 400);
 		
-		testagents = new Agent[]{testguy1, testguy2, testguy3, testguy4, testguy5, testguy6};
+		testagents = new Agent[]{testguy1, testguy2, testguy3, testguy4, testguy5, testguy6, testguy7, testguy8};
 		shuffledsellbids = new Bid[numcommodities][];
 		shuffledbuybids = new Bid[numcommodities][];
 		for(int a = 0; a < numcommodities; a++)
@@ -55,12 +57,12 @@ public class Market {
 		System.out.println("Current market prices:");
 		for(int a = 0; a < numcommodities; a++)
 		{
-			System.out.println(commodities[a].name + ": " + commodities[a].marketprice);
+			System.out.println(commodities[a].name + ": " + (int)commodities[a].marketprice);
 		}
 		System.out.println("Current budgets:");
 		for(int a = 0; a < testagents.length; a++)
 		{
-			System.out.println(testagents[a].name + ": " + testagents[a].budget);
+			System.out.println(testagents[a].name + ": " + (int)testagents[a].budget);
 		}
 		System.out.println("______________________");
 
@@ -229,7 +231,7 @@ public class Market {
 		seller.budget = seller.budget + money;
 		buyer.inventory[c.commoditynumber] = buyer.inventory[c.commoditynumber] + quantity;
 		seller.inventory[c.commoditynumber] = seller.inventory[c.commoditynumber] - quantity;
-		System.out.println(buyer.name + " bought " + quantity + " units of " + c.name + " from " + seller.name + " at " + money/quantity + " galactic intracredits each");
+		System.out.println(buyer.name + " bought " + quantity + " units of " + c.name + " from " + seller.name + " at " + (int)(money/quantity) + " galactic intracredits each");
 
 	}
 	

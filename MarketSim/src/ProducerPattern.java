@@ -63,7 +63,7 @@ public class ProducerPattern extends TradingPattern{
 				if (p>0)
 				{
 				Bid b = new Bid(agent, "sell", agent.market.commodities[a], surplus, p);
-				System.out.println(b.agent.name + " wants to sell " + surplus + " units of " + agent.market.commodities[a].name + " for " + p +  " galactic intracredits each.");
+				System.out.println(b.agent.name + " wants to sell " + surplus + " units of " + agent.market.commodities[a].name + " for " + (int)p +  " galactic intracredits each.");
 				agent.market.submitBid(b);
 				}
 			}
@@ -88,7 +88,7 @@ public class ProducerPattern extends TradingPattern{
 					Bid b = new Bid(agent, "buy", agent.market.commodities[a], needed, p);
 					b.spendingcap = spendcap;
 					b.marginalscalefactor = marginalscalefactor;
-					System.out.println(b.agent.name + " wants to buy " + needed + " units of " + agent.market.commodities[a].name + ", and is willing to spend " + spendcap + " galactic intracredits.");
+					System.out.println(b.agent.name + " wants to buy " + needed + " units of " + agent.market.commodities[a].name + ", and is willing to spend " + (int)spendcap + " galactic intracredits.");
 					agent.market.submitBid(b);	
 				}
 			}
