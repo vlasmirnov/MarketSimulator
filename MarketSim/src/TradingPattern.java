@@ -14,12 +14,8 @@ abstract public class TradingPattern {
         for (Commodity commodity : agent.inventory.keySet()){
             int amountCommodityCurrentlyOwned = agent.inventory.get(commodity);
             int amountRemaining = amountCommodityCurrentlyOwned - agent.consumptionRate;
-            if (amountRemaining >= 0){
-                agent.inventory.put(commodity, amountRemaining);
-            } else {
-                amountNeededToConsumeButCouldNot += amountRemaining;
-                agent.inventory.put(commodity, 0);
-            }
+            agent.inventory.put(commodity, amountRemaining);
+ 
         }
 	}
 	
