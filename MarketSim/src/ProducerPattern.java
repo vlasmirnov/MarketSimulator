@@ -17,9 +17,9 @@ public class ProducerPattern extends TradingPattern{
 		int totalneeds = 0;
 		for (Commodity commodity : agent.inventory.keySet())
 		{
-			if(agent.inventory.get(commodity) < 0)
+			if(agent.inventory.get(commodity) < 10)
 			{
-				totalneeds = totalneeds - agent.inventory.get(commodity);
+				totalneeds = totalneeds + 10 - agent.inventory.get(commodity);
 			}
 		}
 
@@ -28,11 +28,11 @@ public class ProducerPattern extends TradingPattern{
 		{
 			double p = 0;
 			Random r = new Random();
-			int inventorychange = agent.inventory.get(commodity) - agent.previousinventory.get(commodity);
+			int inventorychange = agent.inventory.get(commodity) -agent.shortages.get(commodity) - agent.previousinventory.get(commodity);
 			double previousprice = agent.previousroundpricebid.get(commodity);
-			if(agent.inventory.get(commodity) > 0)
+			if(agent.inventory.get(commodity) > 10)
 			{
-				int surplus = agent.inventory.get(commodity);
+				int surplus = agent.inventory.get(commodity) - 10;
 				if(commodity.marketprice == -1)
 				{
 					p = r.nextDouble() * 100;
@@ -49,9 +49,9 @@ public class ProducerPattern extends TradingPattern{
 				agent.market.acceptBid(b);
 				}
 			}
-			if(agent.inventory.get(commodity) < 0)
+			if(agent.inventory.get(commodity) < 10)
 			{
-				int needed = 0 - agent.inventory.get(commodity);
+				int needed = 10 - agent.inventory.get(commodity);
 				if(commodity.marketprice == -1)
 				{
 					p = r.nextDouble() * 100;
