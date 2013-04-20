@@ -31,7 +31,7 @@ abstract public class TradingPattern {
 	public void produce()
 	{
         int amountCommodityCurrentlyOwned = agent.inventory.get(agent.commodityProduced);
-        agent.inventory.put(agent.commodityProduced, amountCommodityCurrentlyOwned + agent.productionRate);
+        agent.inventory.put(agent.commodityProduced, amountCommodityCurrentlyOwned + agent.toProduce);
 	}
 	
 	abstract public void placeBids();

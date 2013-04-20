@@ -8,6 +8,7 @@ public class Agent{
 	public String name;
 	public Commodity commodityProduced;
 	public int productionRate;
+	public int toProduce;
     public int consumptionRate;
     public HashMap<Commodity, Integer> inventory;
     public HashMap<Commodity, Integer> previousinventory;
@@ -20,6 +21,7 @@ public class Agent{
 		this.market = market;
 		this.name = name;
         this.productionRate = productionRate;
+        this.toProduce = productionRate;
         this.consumptionRate = consumptionRate;
         this.commodityProduced = commodityProduced;
         this.budget = budget;

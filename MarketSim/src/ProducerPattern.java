@@ -22,6 +22,16 @@ public class ProducerPattern extends TradingPattern{
 				totalneeds = totalneeds + 10 - agent.inventory.get(commodity);
 			}
 		}
+		Commodity production = agent.commodityProduced;
+		int productioninventorychange = agent.inventory.get(production) -agent.shortages.get(production) - agent.previousinventory.get(production);
+		if (productioninventorychange > 0 && agent.previousinventory.get(production) > 20 && agent.toProduce > 0)
+		{
+			agent.toProduce = agent.toProduce - 1;
+		}
+		if (productioninventorychange <= 0 && agent.toProduce < agent.productionRate)
+		{
+			agent.toProduce = agent.toProduce + 1;
+		}
 
 
         for (Commodity commodity : agent.inventory.keySet())

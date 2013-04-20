@@ -12,7 +12,7 @@ public class Main {
 
         Agent testGuy1 = new Agent(market, new ProducerPattern(), "Oliver", c1, 3, 2, 500d);
         Agent testGuy2 = new Agent(market, new ProducerPattern(), "Edward", c1, 3, 2, 500d);
-        Agent testGuy3 = new Agent(market, new ProducerPattern(), "Stephen", c2, 5, 2, 500d);
+        Agent testGuy3 = new Agent(market, new ProducerPattern(), "Stephen", c2, 4, 2, 500d);
         Agent testGuy4 = new Agent(market, new ProducerPattern(), "Richard", c2, 5, 2, 500d);
         Agent testGuy5 = new Agent(market, new ProducerPattern(), "Marcus", c3, 4, 2, 500d);
         Agent testGuy6 = new Agent(market, new ProducerPattern(), "Alexander", c3, 3, 2, 500d);
@@ -20,7 +20,7 @@ public class Main {
         market.agents = new Agent[]{testGuy1,testGuy2,testGuy3,testGuy4,testGuy5,testGuy6};
 
 
-		for(int a = 0; a < 5000; a++)
+		for(int a = 0; a < 1000; a++)
 		{
 		    System.out.println("Trading cycle " + a);
 		    System.out.println("____________________");
