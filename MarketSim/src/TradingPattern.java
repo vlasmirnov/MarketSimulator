@@ -18,11 +18,15 @@ abstract public class TradingPattern {
             {
             	amountNeededToConsumeButCouldNot = 0 - amountRemaining;
             	agent.inventory.put(commodity, 0);
+            	commodity.totalconsumption = commodity.totalconsumption + agent.consumptionRate + amountRemaining;
+            	commodity.consumption = commodity.consumption + agent.consumptionRate + amountRemaining;
             }
             else
             {
                 agent.inventory.put(commodity, amountRemaining);	
-                amountNeededToConsumeButCouldNot = 0;              
+                amountNeededToConsumeButCouldNot = 0;    
+                commodity.totalconsumption = commodity.totalconsumption + agent.consumptionRate;
+                commodity.consumption = commodity.consumption + agent.consumptionRate;
             }
             agent.shortages.put(commodity, amountNeededToConsumeButCouldNot);
         }

@@ -1,3 +1,5 @@
+import java.io.BufferedWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -7,6 +9,8 @@ public class Market {
 
 	public Commodity[] commodities;
 	public Agent[] agents;
+	public BufferedWriter bwMarket;
+	public BufferedWriter bwCommodities;
 	private HashMap<Commodity, ArrayList<Bid>> buyBids;
 	private HashMap<Commodity, ArrayList<Bid>> sellBids;
     private HashMap<Commodity, ArrayList<Bid>> shuffledSellBids;
@@ -50,6 +54,9 @@ public class Market {
      * Tell the agents to update themselves and submit their bids
      */
     private void requestAgentBids(){
+    	for (Commodity commodity : commodities){
+    		commodity.consumption = 0;
+    	}
         for (Agent agent : agents) {
             agent.update();
         }
@@ -63,14 +70,48 @@ public class Market {
         System.out.println("______________________");
         System.out.println("Current market prices:");
 
+        String marketcsvline = "";
+        String entitiescsvline = "";
         for (Commodity commodity : commodities){
             System.out.println(commodity.name + ": " + commodity.marketprice);
+            marketcsvline = marketcsvline + commodity.marketprice + ",";
+            entitiescsvline = entitiescsvline + commodity.consumption + ",";
         }
+        double budgetvar = budgetVariance();
+        entitiescsvline = entitiescsvline + budgetvar;
         System.out.println("Current budgets:");
         for (Agent agent : agents) {
             System.out.println(agent.name + ": " + agent.budget);
         }
         System.out.println("______________________");
+        
+        try {
+			bwMarket.write(marketcsvline.substring(0, marketcsvline.length()-1));
+			bwCommodities.write(entitiescsvline);
+			bwMarket.newLine();
+			bwMarket.flush();
+			bwCommodities.newLine();
+			bwCommodities.flush();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+    }
+    
+    public double budgetVariance()
+    {
+    	double avg = 0;
+    	for(Agent agent: agents)
+    	{
+    		avg = avg + agent.budget;
+    	}
+    	avg = avg / agents.length;
+    	double variance = 0;
+    	for(Agent agent: agents)
+    	{
+    		variance = variance + Math.pow(avg - agent.budget, 2);
+    	}
+    	variance = variance / agents.length;
+    	return variance;
     }
 
     /**
