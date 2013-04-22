@@ -128,7 +128,7 @@ public class Market {
             for (Bid buyBid : buyList) {
                 for (Bid sellBid : sellList) {
                     if (sellBid.quantity != 0 && buyBid.price >= sellBid.price) {
-                        int maxBuyAmount = (int) Math.ceil((Math.log(sellBid.price * 1.0 / buyBid.price) / Math.log(1 / 1.2))) + 1;
+                        int maxBuyAmount = (int) Math.ceil((Math.log(sellBid.price * 1.0 / buyBid.price) / Math.log(1 / buyBid.marginalscalefactor))) + 1;
                         int maxBuyAmount2 = (int) (buyBid.spendingcap / sellBid.price);
                         maxBuyAmount = Math.min(maxBuyAmount, maxBuyAmount2);
                         int buyAmount = 0;
@@ -141,7 +141,7 @@ public class Market {
                             if (buyAmount >= sellBid.quantity) {
                                 transaction(buyBid.agent, sellBid.agent, sellBid.commodity, sellBid.quantity, sellBid.quantity * sellBid.price);
                                 buyBid.spendingcap = buyBid.spendingcap - sellBid.quantity * sellBid.price;
-                                buyBid.price = buyBid.price * Math.pow((1 / 1.2), sellBid.quantity);
+                                buyBid.price = buyBid.price * Math.pow((1 / buyBid.marginalscalefactor), sellBid.quantity);
                                 quantitySold = quantitySold + sellBid.quantity;
                                 newMarketPrice = newMarketPrice + sellBid.quantity * sellBid.price;
                                 buyBid.quantity = buyBid.quantity - sellBid.quantity;
@@ -152,7 +152,7 @@ public class Market {
                             } else {
                                 transaction(buyBid.agent, sellBid.agent, sellBid.commodity, buyAmount, buyAmount * sellBid.price);
                                 buyBid.spendingcap = buyBid.spendingcap - buyAmount * sellBid.price;
-                                buyBid.price = buyBid.price * Math.pow((1 / 1.2), buyAmount);
+                                buyBid.price = buyBid.price * Math.pow((1 / buyBid.marginalscalefactor), buyAmount);
                                 quantitySold = quantitySold + buyAmount;
                                 newMarketPrice = newMarketPrice + buyAmount * sellBid.price;
                                 sellBid.quantity = sellBid.quantity - buyAmount;
@@ -217,7 +217,7 @@ public class Market {
 		buyer.budget = buyer.budget - price;
 		seller.budget = seller.budget + price;
 		buyer.inventory.put(commodity, buyer.inventory.get(commodity) + quantity);
-		seller.inventory.put(commodity, seller.inventory.get(commodity) + quantity);
+		seller.inventory.put(commodity, seller.inventory.get(commodity) - quantity);
 		System.out.println(buyer.name + " bought " + quantity + " units of " + commodity.name + " from " + seller.name + " at " + price/quantity + " galactic intracredits each");
 	}
 	
