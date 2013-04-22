@@ -14,13 +14,23 @@ public class ProducerPattern extends TradingPattern{
 
 	public void placeBids()
 	{
-		int totalneeds = 0;
+		double totalneeds = 0;
 		for (Commodity commodity : agent.inventory.keySet())
 		{
-			if(agent.inventory.get(commodity) < 10)
+			if(agent.inventory.get(commodity) < 15)
 			{
-				totalneeds = totalneeds + 10 - agent.inventory.get(commodity);
+				totalneeds = totalneeds + (15 - agent.inventory.get(commodity));
 			}
+		}
+		Commodity production = agent.commodityProduced;
+		int productioninventorychange = agent.inventory.get(production) -agent.shortages.get(production) - agent.previousinventory.get(production);
+		if (productioninventorychange > 0 && agent.previousinventory.get(production) > 40 && agent.toProduce > 0)
+		{
+			agent.toProduce = agent.toProduce - 1;
+		}
+		if (productioninventorychange <= 0 && agent.toProduce < agent.productionRate)
+		{
+			agent.toProduce = agent.toProduce + 1;
 		}
 
 
@@ -30,9 +40,9 @@ public class ProducerPattern extends TradingPattern{
 			Random r = new Random();
 			int inventorychange = agent.inventory.get(commodity) -agent.shortages.get(commodity) - agent.previousinventory.get(commodity);
 			double previousprice = agent.previousroundpricebid.get(commodity);
-			if(agent.inventory.get(commodity) > 10)
+			if(agent.inventory.get(commodity) > 20)
 			{
-				int surplus = agent.inventory.get(commodity) - 10;
+				int surplus = agent.inventory.get(commodity) - 20;
 				if(commodity.marketprice == -1)
 				{
 					p = r.nextDouble() * 100;
@@ -40,6 +50,10 @@ public class ProducerPattern extends TradingPattern{
 				else
 				{
 					p = marketpriceweight * commodity.marketprice + (1-marketpriceweight) * previousprice * Math.pow(marginalScaleFactor, 0.1 - inventorychange);
+				}
+				if (p < commodity.pricefloor)
+				{
+					p = commodity.pricefloor;
 				}
 				if (p>0)
 				{
@@ -49,9 +63,10 @@ public class ProducerPattern extends TradingPattern{
 				agent.market.acceptBid(b);
 				}
 			}
-			if(agent.inventory.get(commodity) < 10)
+			if(agent.inventory.get(commodity) < 15)
 			{
-				int needed = 10 - agent.inventory.get(commodity);
+				int needed = 15 - agent.inventory.get(commodity);
+				double neededspending = needed;
 				if(commodity.marketprice == -1)
 				{
 					p = r.nextDouble() * 100;
@@ -60,7 +75,7 @@ public class ProducerPattern extends TradingPattern{
 				{
 					p = marketpriceweight * commodity.marketprice + (1-marketpriceweight) * previousprice * Math.pow(marginalScaleFactor, -0.1 - inventorychange);
 				}
-				double spendcap = agent.budget * needed / totalneeds;
+				double spendcap = agent.budget * neededspending / totalneeds;
 				if (p > spendcap)
 				{
 					p = spendcap;
