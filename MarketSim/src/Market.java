@@ -5,7 +5,6 @@ import java.util.HashMap;
 
 public class Market {
 
-	private int numcommodities;
 	public Commodity[] commodities;
 	public Agent[] agents;
 	private HashMap<Commodity, ArrayList<Bid>> buyBids;

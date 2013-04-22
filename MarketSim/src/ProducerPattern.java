@@ -51,6 +51,10 @@ public class ProducerPattern extends TradingPattern{
 				{
 					p = marketpriceweight * commodity.marketprice + (1-marketpriceweight) * previousprice * Math.pow(marginalScaleFactor, 0.1 - inventorychange);
 				}
+				if (p < commodity.pricefloor)
+				{
+					p = commodity.pricefloor;
+				}
 				if (p>0)
 				{
 				Bid b = new Bid(agent, BidType.SELL, commodity, surplus, p);
