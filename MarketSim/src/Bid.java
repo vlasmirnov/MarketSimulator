@@ -8,7 +8,7 @@ public class Bid {
     public final int initialQuantity;
 	public double price;
 	public double spendingcap;
-	public double marginalscalefactor;
+	public double marginalscalefactor = 1;
 	
 	public Bid(Agent agent, BidType type, Commodity commodity, int quantity, double price)
 	{
@@ -18,6 +18,7 @@ public class Bid {
 		this.quantity = quantity;
         initialQuantity = quantity;
 		this.price = price;
+		this.spendingcap = quantity * price;
 	}
 
     public boolean isFilled(){

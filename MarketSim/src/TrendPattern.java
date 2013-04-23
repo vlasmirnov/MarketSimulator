@@ -46,6 +46,8 @@ public class TrendPattern extends TradingPattern {
                 } else {
                     Bid sellBid = new Bid(agent, BidType.SELL, commodity, agent.inventory.get(commodity), lastMarketPrice);
                     market.acceptBid(sellBid);
+    				System.out.println(agent.name + " wants to sell " + sellBid.quantity + " units of " + commodity.name + " for " + lastMarketPrice +  " galactic intracredits each.");
+
                 }
 
             }
@@ -57,6 +59,7 @@ public class TrendPattern extends TradingPattern {
                 int quantityToBUy = (int) Math.floor(spendingCap / lastMarketPrice);
                 Bid bid = new Bid(agent, BidType.BUY, commodity, quantityToBUy, lastMarketPrice);
                 market.acceptBid(bid);
+				System.out.println(bid.agent.name + " wants to buy " + bid.quantity + " units of " + commodity.name + ", and is willing to spend " + lastMarketPrice + " galactic intracredits.");
             }
         }
     }

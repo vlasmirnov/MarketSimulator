@@ -4,6 +4,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 
 public class Main {
@@ -43,16 +44,23 @@ public class Main {
         market.commodities = new Commodity[]{c1,c2,c3, c4};
 
         ArrayList<Agent> newagents = new ArrayList<Agent>();
+        Random rand = new Random();
         /*
         Create 25 copies of four different agents
          */
         for(int a = 0; a < 25; a++)
         {
-        	newagents.add(new Agent(market, new ProducerPattern(), "Clone " + 4*a, c1, 3, 2, 1000d));
-        	newagents.add(new Agent(market, new ProducerPattern(), "Clone " + (4*a+1), c2, 4, 2, 1000d));
-        	newagents.add(new Agent(market, new ProducerPattern(), "Clone " + (4*a+2), c3, 5, 2, 1000d));
-        	newagents.add(new Agent(market, new ProducerPattern(), "Clone " + (4*a+3), c4, 6, 2, 1000d));
+        	newagents.add(new Agent(market, new ProducerPattern(), "Citizen " + 4*a, c1, 3, 2, 1000d));
+        	newagents.add(new Agent(market, new ProducerPattern(), "Citizen " + (4*a+1), c2, 4, 2, 1000d));
+        	newagents.add(new Agent(market, new ProducerPattern(), "Citizen " + (4*a+2), c3, 5, 2, 1000d));
+        	newagents.add(new Agent(market, new ProducerPattern(), "Citizen " + (4*a+3), c4, 6, 2, 1000d));
         }
+        for(int a = 0; a < 10; a++)
+        {
+        	int days = rand.nextInt(4) + 3;
+        	newagents.add(new Agent(market, new TrendPattern(market,days), "Speculator " + a, c1, 0, 0, 1000d));
+        }
+        
         market.agents = new Agent[newagents.size()];
         newagents.toArray(market.agents);
 
@@ -64,7 +72,7 @@ public class Main {
 		    System.out.println("____________________");
 		    market.update();
 		}
-		displayRoundData(market.getRoundDataList());
+		//displayRoundData(market.getRoundDataList());
         System.out.println("Finished");
 	}
 
