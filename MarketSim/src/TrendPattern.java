@@ -53,14 +53,13 @@ public class TrendPattern extends TradingPattern {
             for (Commodity commodity : market.commodities) {
                 double trend = trends.get(commodity);
                 if (trend > 0) {
-
-                double lastMarketPrice = commodity.marketprice;
-                double trendPercent = trend / totalTrend;
-                double spendingCap = Math.floor(agent.budget * trendPercent);
-                int quantityToBUy = (int) Math.floor(spendingCap / lastMarketPrice);
-                Bid bid = new Bid(agent, BidType.BUY, commodity, quantityToBUy, lastMarketPrice);
-                market.acceptBid(bid);
-				System.out.println(bid.agent.name + " wants to buy " + bid.quantity + " units of " + commodity.name + ", and is willing to spend " + lastMarketPrice + " galactic intracredits.");
+                    double lastMarketPrice = commodity.marketprice;
+                    double trendPercent = trend / totalTrend;
+                    double spendingCap = Math.floor(agent.budget * trendPercent);
+                    int quantityToBUy = (int) Math.floor(spendingCap / lastMarketPrice);
+                    Bid bid = new Bid(agent, BidType.BUY, commodity, quantityToBUy, lastMarketPrice);
+                    market.acceptBid(bid);
+                    System.out.println(bid.agent.name + " wants to buy " + bid.quantity + " units of " + commodity.name + ", and is willing to spend " + lastMarketPrice + " galactic intracredits.");
                 }
             }
         }

@@ -1,3 +1,4 @@
+import javax.swing.*;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -6,12 +7,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import javax.swing.JFrame;
-
 
 public class Main {
 
     public final static Boolean DEBUGGING = false;
+
+    private final static Integer NUMBER_OF_ROUNDS = 1000;
 
 	public static void main(String[] args) throws IOException {
 		
@@ -49,6 +50,7 @@ public class Main {
 
         ArrayList<Agent> newagents = new ArrayList<Agent>();
         Random rand = new Random();
+
         /*
         Create 25 copies of four different agents
          */
@@ -59,7 +61,7 @@ public class Main {
         	newagents.add(new Agent(market, new ProducerPattern(), "Citizen " + (4*a+2), c3, 5, 2, 1000d));
         	newagents.add(new Agent(market, new ProducerPattern(), "Citizen " + (4*a+3), c4, 6, 2, 1000d));
         }
-        for(int a = 0; a < 10; a++)
+        for(int a = 0; a < 100; a++)
         {
         	int days = rand.nextInt(4) + 3;
         	newagents.add(new Agent(market, new TrendPattern(market,days), "Speculator " + a, c1, 0, 0, 1000d));
@@ -68,9 +70,7 @@ public class Main {
         market.agents = new Agent[newagents.size()];
         newagents.toArray(market.agents);
 
-
-
-		for(int a = 0; a < 1000; a++)
+		for(int a = 0; a < NUMBER_OF_ROUNDS; a++)
 		{
 		    if (DEBUGGING) {
                 System.out.println("Trading cycle " + a);
@@ -87,7 +87,7 @@ public class Main {
 	public static void displayRoundData(List<RoundData> roundDataList) throws IOException {
     	Commodity[] commodities = roundDataList.get(0).getCommodities();
     	for (Commodity commodity : commodities) {
-    		double[] marketprices = new double[1000];
+    		double[] marketprices = new double[NUMBER_OF_ROUNDS];
     		int i = 0;
     		for (RoundData roundData : roundDataList) {
     			marketprices[i] = roundData.getMarketPrices().get(commodity);
