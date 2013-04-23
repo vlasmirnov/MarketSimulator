@@ -2,6 +2,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -41,18 +42,21 @@ public class Main {
         Commodity c4 = new Commodity("Ware D", 1);
         market.commodities = new Commodity[]{c1,c2,c3, c4};
 
-        market.agents = new Agent[100];
-
+        ArrayList<Agent> newagents = new ArrayList<Agent>();
         /*
         Create 25 copies of four different agents
          */
-        for (int a = 0; a < market.agents.length / 4; a++)
+        for(int a = 0; a < 25; a++)
         {
-        	market.agents[a] = new Agent(market, new ProducerPattern(), "Clone " + a, c1, 3, 2, 1000d);
-        	market.agents[a + 25] = new Agent(market, new ProducerPattern(), "Clone " + (a + 25), c2, 4, 2, 1000d);
-        	market.agents[a + 50] = new Agent(market, new ProducerPattern(), "Clone " + (a + 50), c3, 5, 2, 1000d);
-        	market.agents[a + 75] = new Agent(market, new ProducerPattern(), "Clone " + (a + 75), c4, 6, 2, 1000d);
+        	newagents.add(new Agent(market, new ProducerPattern(), "Clone " + 4*a, c1, 3, 2, 1000d));
+        	newagents.add(new Agent(market, new ProducerPattern(), "Clone " + (4*a+1), c2, 4, 2, 1000d));
+        	newagents.add(new Agent(market, new ProducerPattern(), "Clone " + (4*a+2), c3, 5, 2, 1000d));
+        	newagents.add(new Agent(market, new ProducerPattern(), "Clone " + (4*a+3), c4, 6, 2, 1000d));
         }
+        market.agents = new Agent[newagents.size()];
+        newagents.toArray(market.agents);
+
+
 
 		for(int a = 0; a < 2000; a++)
 		{
