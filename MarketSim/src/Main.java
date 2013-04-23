@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import javax.swing.JFrame;
+
 
 public class Main {
 
@@ -68,7 +70,7 @@ public class Main {
 
 
 
-		for(int a = 0; a < 2000; a++)
+		for(int a = 0; a < 1000; a++)
 		{
 		    if (DEBUGGING) {
                 System.out.println("Trading cycle " + a);
@@ -82,12 +84,24 @@ public class Main {
         }
 	}
 
-    public static void displayRoundData(List<RoundData> roundDataList) throws IOException {
-        for (RoundData roundData : roundDataList) {
-            for (Commodity commodity : roundData.getCommodities()) {
-                System.out.println(commodity.marketprice);
+	public static void displayRoundData(List<RoundData> roundDataList) throws IOException {
+    	Commodity[] commodities = roundDataList.get(0).getCommodities();
+    	for (Commodity commodity : commodities) {
+    		double[] marketprices = new double[1000];
+    		int i = 0;
+    		for (RoundData roundData : roundDataList) {
+    			marketprices[i] = roundData.getMarketPrices().get(commodity);
+    			i++;
             }
+    		// Filled in information on commodity prices, let's make a graph based on it now:
+    		JFrame f = new JFrame();
+            f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            f.add(new GraphingData(marketprices));
+            f.setSize(1000,1000);
+            f.setLocation(20,20);
+            f.setVisible(true);
         }
+    	
     }
 
 }
