@@ -9,8 +9,9 @@ public class Market {
 
 	public Commodity[] commodities;
 	public Agent[] agents;
-	public BufferedWriter bwMarket;
-	public BufferedWriter bwCommodities;
+
+	public BufferedWriter marketBufferedWriter;
+	public BufferedWriter commoditiesBufferedWriter;
 	private HashMap<Commodity, ArrayList<Bid>> buyBids;
 	private HashMap<Commodity, ArrayList<Bid>> sellBids;
     private HashMap<Commodity, ArrayList<Bid>> shuffledSellBids;
@@ -33,7 +34,7 @@ public class Market {
 		shuffleBids();
 
         matchAndExecuteTrades();
-        
+
 		printMarketInformation();
 	}
 
@@ -86,12 +87,12 @@ public class Market {
         System.out.println("______________________");
         
         try {
-			bwMarket.write(marketcsvline.substring(0, marketcsvline.length()-1));
-			bwCommodities.write(entitiescsvline);
-			bwMarket.newLine();
-			bwMarket.flush();
-			bwCommodities.newLine();
-			bwCommodities.flush();
+			marketBufferedWriter.write(marketcsvline.substring(0, marketcsvline.length() - 1));
+			commoditiesBufferedWriter.write(entitiescsvline);
+			marketBufferedWriter.newLine();
+			marketBufferedWriter.flush();
+			commoditiesBufferedWriter.newLine();
+			commoditiesBufferedWriter.flush();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -260,6 +261,14 @@ public class Market {
 		seller.inventory.put(commodity, seller.inventory.get(commodity) - quantity);
 		System.out.println(buyer.name + " bought " + quantity + " units of " + commodity.name + " from " + seller.name + " at " + price/quantity + " galactic intracredits each");
 	}
-	
-	
+
+
+    public HashMap<Commodity, ArrayList<Bid>> getBuyBids() {
+        return buyBids;
+    }
+
+    public HashMap<Commodity, ArrayList<Bid>> getSellBids() {
+        return sellBids;
+    }
+
 }

@@ -7,9 +7,7 @@ public class ProducerPattern extends TradingPattern{
 	private double sellerScaleFactor = 1.1;
 	private double marketpriceweight = 0.25;
 
-	
 	public ProducerPattern() {
-
 	}
 
 	public void placeBids()

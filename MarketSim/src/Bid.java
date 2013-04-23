@@ -5,6 +5,7 @@ public class Bid {
 	public BidType type;
 	public Commodity commodity;
 	public int quantity;
+    public final int initialQuantity;
 	public double price;
 	public double spendingcap;
 	public double marginalscalefactor;
@@ -15,7 +16,15 @@ public class Bid {
 		this.type = type;
 		commodity = c;
 		quantity = q;
+        initialQuantity = q;
 		price = p;
 	}
 
+    public boolean isFilled(){
+        return quantity == 0;
+    }
+
+    public boolean isPartiallyFilled(){
+        return initialQuantity > quantity;
+    }
 }
