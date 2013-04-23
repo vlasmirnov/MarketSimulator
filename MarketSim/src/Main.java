@@ -2,7 +2,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -55,22 +54,22 @@ public class Main {
         	market.agents[a + 75] = new Agent(market, new ProducerPattern(), "Clone " + (a + 75), c4, 6, 2, 1000d);
         }
 
-
-        List<RoundData> roundDataList = new ArrayList<RoundData>();
-		for(int a = 0; a < 100; a++)
+		for(int a = 0; a < 2000; a++)
 		{
 		    System.out.println("Trading cycle " + a);
 		    System.out.println("____________________");
 		    market.update();
-            RoundData roundData = new RoundData(market);
-            roundDataList.add(roundData);
 		}
-		printRoundData(roundDataList);
+		displayRoundData(market.getRoundDataList());
         System.out.println("Finished");
 	}
 
-    public static void printRoundData(List<RoundData> roundDataList) throws IOException {
-
+    public static void displayRoundData(List<RoundData> roundDataList) throws IOException {
+        for (RoundData roundData : roundDataList) {
+            for (Commodity commodity : roundData.getCommodities()) {
+                System.out.println(commodity.marketprice);
+            }
+        }
     }
 
 }

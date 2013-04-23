@@ -3,6 +3,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 
 
 public class Market {
@@ -16,6 +17,7 @@ public class Market {
 	private HashMap<Commodity, ArrayList<Bid>> sellBids;
     private HashMap<Commodity, ArrayList<Bid>> shuffledSellBids;
     private HashMap<Commodity, ArrayList<Bid>> shuffledBuyBids;
+    private List<RoundData> roundDataList = new ArrayList<RoundData>();
 
 	public Market()
 	{
@@ -36,6 +38,9 @@ public class Market {
         matchAndExecuteTrades();
 
 		printMarketInformation();
+
+        RoundData roundData = new RoundData(this);
+        roundDataList.add(roundData);
 	}
 
     private void emptyBidLists(){
@@ -265,4 +270,7 @@ public class Market {
         return sellBids;
     }
 
+    public List<RoundData> getRoundDataList() {
+        return roundDataList;
+    }
 }
