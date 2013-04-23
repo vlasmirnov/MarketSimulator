@@ -10,14 +10,14 @@ public class Bid {
 	public double spendingcap;
 	public double marginalscalefactor;
 	
-	public Bid(Agent agent, BidType type, Commodity c, int q, double p)
+	public Bid(Agent agent, BidType type, Commodity commodity, int quantity, double price)
 	{
 		this.agent = agent;
 		this.type = type;
-		commodity = c;
-		quantity = q;
-        initialQuantity = q;
-		price = p;
+		this.commodity = commodity;
+		this.quantity = quantity;
+        initialQuantity = quantity;
+		this.price = price;
 	}
 
     public boolean isFilled(){

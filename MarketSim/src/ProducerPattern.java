@@ -21,7 +21,7 @@ public class ProducerPattern extends TradingPattern{
 			}
 		}
 		Commodity production = agent.commodityProduced;
-		int productioninventorychange = agent.inventory.get(production) -agent.shortages.get(production) - agent.previousinventory.get(production);
+		int productioninventorychange = agent.inventory.get(production) - agent.shortages.get(production) - agent.previousinventory.get(production);
 		if (productioninventorychange > 0 && agent.previousinventory.get(production) > 40 && agent.toProduce > 0)
 		{
 			agent.toProduce = agent.toProduce - 1;
