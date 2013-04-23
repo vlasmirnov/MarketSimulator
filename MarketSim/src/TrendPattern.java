@@ -18,9 +18,8 @@ public class TrendPattern extends TradingPattern {
 
     @Override
     /**
-     * Traders will look at the sum of the trends over the past 'numberRoundsToTrack' days, calculating the expected
-     * market price of this round to be the market price of last round + that sum of trends. Will not place bids until
-     * as many rounds as he is tracking have occurred.
+     * Traders with this pattern will look at the trend of market prices and buy or sell at the last market price
+     * accordingly. Will not place bids until as many rounds as he is tracking have occurred.
      */
     public void placeBids() {
         // We'll calculate the expected price for each commodity

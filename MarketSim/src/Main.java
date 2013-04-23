@@ -9,6 +9,8 @@ import java.util.Random;
 
 public class Main {
 
+    public final static Boolean DEBUGGING = false;
+
 	public static void main(String[] args) throws IOException {
 		
         Market market = new Market();
@@ -68,12 +70,16 @@ public class Main {
 
 		for(int a = 0; a < 2000; a++)
 		{
-		    System.out.println("Trading cycle " + a);
-		    System.out.println("____________________");
+		    if (DEBUGGING) {
+                System.out.println("Trading cycle " + a);
+                System.out.println("____________________");
+            }
 		    market.update();
 		}
-		//displayRoundData(market.getRoundDataList());
-        System.out.println("Finished");
+		displayRoundData(market.getRoundDataList());
+        if (DEBUGGING) {
+            System.out.println("Finished");
+        }
 	}
 
     public static void displayRoundData(List<RoundData> roundDataList) throws IOException {

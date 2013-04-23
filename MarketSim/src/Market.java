@@ -8,40 +8,40 @@ import java.util.List;
 
 public class Market {
 
-	public Commodity[] commodities;
-	public Agent[] agents;
+    public Commodity[] commodities;
+    public Agent[] agents;
 
-	public BufferedWriter marketBufferedWriter;
-	public BufferedWriter commoditiesBufferedWriter;
-	private HashMap<Commodity, ArrayList<Bid>> buyBids;
-	private HashMap<Commodity, ArrayList<Bid>> sellBids;
+    public BufferedWriter marketBufferedWriter;
+    public BufferedWriter commoditiesBufferedWriter;
+    private HashMap<Commodity, ArrayList<Bid>> buyBids;
+    private HashMap<Commodity, ArrayList<Bid>> sellBids;
     private HashMap<Commodity, ArrayList<Bid>> shuffledSellBids;
     private HashMap<Commodity, ArrayList<Bid>> shuffledBuyBids;
     private List<RoundData> roundDataList = new ArrayList<RoundData>();
 
-	public Market()
-	{
-	}
+    public Market()
+    {
+    }
 
     /**
      * Goes through one round.
      * Clears the bids, updates the agents, and completes transactions.
      */
-	public void update()
-	{
-		emptyBidLists();
+    public void update()
+    {
+        emptyBidLists();
 
         requestAgentBids();
 
-		shuffleBids();
+        shuffleBids();
 
         matchAndExecuteTrades();
 
-		printMarketInformation();
+        printMarketInformation();
 
         RoundData roundData = new RoundData(this);
         roundDataList.add(roundData);
-	}
+    }
 
     private void emptyBidLists(){
         buyBids = new HashMap<Commodity, ArrayList<Bid>>();
@@ -60,9 +60,9 @@ public class Market {
      * Tell the agents to update themselves and submit their bids
      */
     private void requestAgentBids(){
-    	for (Commodity commodity : commodities){
-    		commodity.consumption = 0;
-    	}
+        for (Commodity commodity : commodities){
+            commodity.consumption = 0;
+        }
         for (Agent agent : agents) {
             agent.update();
         }
@@ -72,10 +72,11 @@ public class Market {
      *  Prints out the current simulation information TODO: turn datapoints into csv / excell file to analyze
      */
     public void printMarketInformation(){
-        System.out.println("Trading cycle complete");
-        System.out.println("______________________");
-        System.out.println("Current market prices:");
-
+        if (Main.DEBUGGING) {
+            System.out.println("Trading cycle complete");
+            System.out.println("______________________");
+            System.out.println("Current market prices:");
+        }
         String marketcsvline = "";
         String entitiescsvline = "";
         for (Commodity commodity : commodities){
@@ -85,48 +86,49 @@ public class Market {
         }
         double budgetvar = budgetVariance();
         entitiescsvline = entitiescsvline + budgetvar;
-        System.out.println("Current budgets:");
-        for (Agent agent : agents) {
-            System.out.println(agent.name + ": " + agent.budget);
+        if (Main.DEBUGGING) {
+            System.out.println("Current budgets:");
+            for (Agent agent : agents) {
+                System.out.println(agent.name + ": " + agent.budget);
+            }
+            System.out.println("______________________");
         }
-        System.out.println("______________________");
-        
         try {
-			marketBufferedWriter.write(marketcsvline.substring(0, marketcsvline.length() - 1));
-			commoditiesBufferedWriter.write(entitiescsvline);
-			marketBufferedWriter.newLine();
-			marketBufferedWriter.flush();
-			commoditiesBufferedWriter.newLine();
-			commoditiesBufferedWriter.flush();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+            marketBufferedWriter.write(marketcsvline.substring(0, marketcsvline.length() - 1));
+            commoditiesBufferedWriter.write(entitiescsvline);
+            marketBufferedWriter.newLine();
+            marketBufferedWriter.flush();
+            commoditiesBufferedWriter.newLine();
+            commoditiesBufferedWriter.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
-    
+
     public double budgetVariance()
     {
-    	double avg = 0;
-    	for(Agent agent: agents)
-    	{
-    		avg = avg + agent.budget;
-    	}
-    	avg = avg / agents.length;
-    	double variance = 0;
-    	for(Agent agent: agents)
-    	{
-    		variance = variance + Math.pow(avg - agent.budget, 2);
-    	}
-    	variance = variance / agents.length;
-    	return variance;
+        double avg = 0;
+        for(Agent agent: agents)
+        {
+            avg = avg + agent.budget;
+        }
+        avg = avg / agents.length;
+        double variance = 0;
+        for(Agent agent: agents)
+        {
+            variance = variance + Math.pow(avg - agent.budget, 2);
+        }
+        variance = variance / agents.length;
+        return variance;
     }
 
     /**
      * Accept a bid submitted by a user
      * @param bid
      */
-	public void acceptBid(Bid bid)
-	{
-		Commodity bidCommodity = bid.commodity;
+    public void acceptBid(Bid bid)
+    {
+        Commodity bidCommodity = bid.commodity;
         switch(bid.type){
             case BUY:
                 ArrayList<Bid> buyBidList = buyBids.get(bidCommodity);
@@ -139,13 +141,13 @@ public class Market {
                 sellBids.put(bidCommodity, sellBidList);
                 break;
         }
-	}
+    }
 
     /**
      * Shuffles the submitted bids and processes transactions for matches.
      */
-	private void shuffleBids()
-	{
+    private void shuffleBids()
+    {
 		/*
 		Shuffle sell bids and buy bids
 		 */
@@ -153,94 +155,94 @@ public class Market {
             ArrayList<Bid> listOfBuyBidsToShuffle = buyBids.get(commodity);
             Collections.shuffle(listOfBuyBidsToShuffle);
             shuffledBuyBids.put(commodity,listOfBuyBidsToShuffle);
-            
+
             ArrayList<Bid> listOfSellBidsToShuffle = sellBids.get(commodity);
             Collections.shuffle(listOfSellBidsToShuffle);
             shuffledSellBids.put(commodity, listOfSellBidsToShuffle);
         }
 
-	}
+    }
 
     /**
      * Calculates the current market price. TODO: Configurable
      */
     private void matchAndExecuteTrades(){
         for (Commodity commodity : commodities){
-        {
-            double newMarketPrice = 0;
-            int quantitySold = 0;
-            ArrayList<Bid> buyList = shuffledBuyBids.get(commodity);
-            ArrayList<Bid> sellList = shuffledSellBids.get(commodity);
-            for (Bid buyBid : buyList) {
-                for (Bid sellBid : sellList) {
-                    if (sellBid.quantity != 0 && buyBid.price >= sellBid.price) {
-                        int maxBuyAmount = (int) Math.ceil((Math.log(sellBid.price * 1.0 / buyBid.price) / Math.log(1 / buyBid.marginalscalefactor))) + 1;
-                        int maxBuyAmount2 = (int) (buyBid.spendingcap / sellBid.price);
-                        int buyAmount = Math.min(Math.min(maxBuyAmount, maxBuyAmount2), sellBid.quantity);
-                        if (buyAmount > 0) {
-                            if (buyAmount >= sellBid.quantity) {
-                                transaction(buyBid.agent, sellBid.agent, sellBid.commodity, sellBid.quantity, sellBid.quantity * sellBid.price);
-                                buyBid.spendingcap = buyBid.spendingcap - sellBid.quantity * sellBid.price;
-                                buyBid.price = buyBid.price * Math.pow((1 / buyBid.marginalscalefactor), sellBid.quantity);
-                                quantitySold = quantitySold + sellBid.quantity;
-                                newMarketPrice = newMarketPrice + sellBid.quantity * sellBid.price;
-                                buyBid.quantity = buyBid.quantity - sellBid.quantity;
-                                sellBid.quantity = 0;
-                                if (buyBid.quantity <= 0) {
-                                    break;
-                                }
-                            } else {
-                                transaction(buyBid.agent, sellBid.agent, sellBid.commodity, buyAmount, buyAmount * sellBid.price);
-                                buyBid.spendingcap = buyBid.spendingcap - buyAmount * sellBid.price;
-                                buyBid.price = buyBid.price * Math.pow((1 / buyBid.marginalscalefactor), buyAmount);
-                                quantitySold = quantitySold + buyAmount;
-                                newMarketPrice = newMarketPrice + buyAmount * sellBid.price;
-                                sellBid.quantity = sellBid.quantity - buyAmount;
-                                buyBid.quantity = buyBid.quantity - buyAmount;
-                                if (buyBid.quantity <= 0) {
-                                    break;
+            {
+                double newMarketPrice = 0;
+                int quantitySold = 0;
+                ArrayList<Bid> buyList = shuffledBuyBids.get(commodity);
+                ArrayList<Bid> sellList = shuffledSellBids.get(commodity);
+                for (Bid buyBid : buyList) {
+                    for (Bid sellBid : sellList) {
+                        if (sellBid.quantity != 0 && buyBid.price >= sellBid.price) {
+                            int maxBuyAmount = (int) Math.ceil((Math.log(sellBid.price * 1.0 / buyBid.price) / Math.log(1 / buyBid.marginalscalefactor))) + 1;
+                            int maxBuyAmount2 = (int) (buyBid.spendingcap / sellBid.price);
+                            int buyAmount = Math.min(Math.min(maxBuyAmount, maxBuyAmount2), sellBid.quantity);
+                            if (buyAmount > 0) {
+                                if (buyAmount >= sellBid.quantity) {
+                                    transaction(buyBid.agent, sellBid.agent, sellBid.commodity, sellBid.quantity, sellBid.quantity * sellBid.price);
+                                    buyBid.spendingcap = buyBid.spendingcap - sellBid.quantity * sellBid.price;
+                                    buyBid.price = buyBid.price * Math.pow((1 / buyBid.marginalscalefactor), sellBid.quantity);
+                                    quantitySold = quantitySold + sellBid.quantity;
+                                    newMarketPrice = newMarketPrice + sellBid.quantity * sellBid.price;
+                                    buyBid.quantity = buyBid.quantity - sellBid.quantity;
+                                    sellBid.quantity = 0;
+                                    if (buyBid.quantity <= 0) {
+                                        break;
+                                    }
+                                } else {
+                                    transaction(buyBid.agent, sellBid.agent, sellBid.commodity, buyAmount, buyAmount * sellBid.price);
+                                    buyBid.spendingcap = buyBid.spendingcap - buyAmount * sellBid.price;
+                                    buyBid.price = buyBid.price * Math.pow((1 / buyBid.marginalscalefactor), buyAmount);
+                                    quantitySold = quantitySold + buyAmount;
+                                    newMarketPrice = newMarketPrice + buyAmount * sellBid.price;
+                                    sellBid.quantity = sellBid.quantity - buyAmount;
+                                    buyBid.quantity = buyBid.quantity - buyAmount;
+                                    if (buyBid.quantity <= 0) {
+                                        break;
+                                    }
                                 }
                             }
                         }
                     }
                 }
-            }
-            if (quantitySold > 0)
-            {
-                newMarketPrice = newMarketPrice / quantitySold;
-            }
-            else
-            {
-                double highestbuy = 0;
-                double lowestsell = Double.MAX_VALUE;
-                for (Bid buybid : buyList) {
-                    if (buybid.price > highestbuy) {
-                        highestbuy = buybid.price;
-                    }
-                }
-                for (Bid sellBid : sellList) {
-                    if (sellBid.price < lowestsell) {
-                        lowestsell = sellBid.price;
-                    }
-                }
-                if (highestbuy > 0)
+                if (quantitySold > 0)
                 {
-                    if(lowestsell < Double.MAX_VALUE)
-                        newMarketPrice = (highestbuy + lowestsell) / 2;
-                    else
-                        newMarketPrice = highestbuy;
+                    newMarketPrice = newMarketPrice / quantitySold;
                 }
                 else
                 {
-                    if(lowestsell < Double.MAX_VALUE)
-                        newMarketPrice = lowestsell;
+                    double highestbuy = 0;
+                    double lowestsell = Double.MAX_VALUE;
+                    for (Bid buybid : buyList) {
+                        if (buybid.price > highestbuy) {
+                            highestbuy = buybid.price;
+                        }
+                    }
+                    for (Bid sellBid : sellList) {
+                        if (sellBid.price < lowestsell) {
+                            lowestsell = sellBid.price;
+                        }
+                    }
+                    if (highestbuy > 0)
+                    {
+                        if(lowestsell < Double.MAX_VALUE)
+                            newMarketPrice = (highestbuy + lowestsell) / 2;
+                        else
+                            newMarketPrice = highestbuy;
+                    }
                     else
-                        newMarketPrice = -1;
-                }
+                    {
+                        if(lowestsell < Double.MAX_VALUE)
+                            newMarketPrice = lowestsell;
+                        else
+                            newMarketPrice = -1;
+                    }
 
+                }
+                commodity.marketprice = newMarketPrice;
             }
-            commodity.marketprice = newMarketPrice;
-        }
         }
     }
 
@@ -252,14 +254,14 @@ public class Market {
      * @param quantity
      * @param price
      */
-	private void transaction(Agent buyer, Agent seller, Commodity commodity, int quantity, double price)
-	{
-		buyer.budget = buyer.budget - price;
-		seller.budget = seller.budget + price;
-		buyer.inventory.put(commodity, buyer.inventory.get(commodity) + quantity);
-		seller.inventory.put(commodity, seller.inventory.get(commodity) - quantity);
-		System.out.println(buyer.name + " bought " + quantity + " units of " + commodity.name + " from " + seller.name + " at " + price/quantity + " galactic intracredits each");
-	}
+    private void transaction(Agent buyer, Agent seller, Commodity commodity, int quantity, double price)
+    {
+        buyer.budget = buyer.budget - price;
+        seller.budget = seller.budget + price;
+        buyer.inventory.put(commodity, buyer.inventory.get(commodity) + quantity);
+        seller.inventory.put(commodity, seller.inventory.get(commodity) - quantity);
+        System.out.println(buyer.name + " bought " + quantity + " units of " + commodity.name + " from " + seller.name + " at " + price/quantity + " galactic intracredits each");
+    }
 
 
     public HashMap<Commodity, ArrayList<Bid>> getBuyBids() {
