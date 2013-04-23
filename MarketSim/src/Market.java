@@ -171,13 +171,7 @@ public class Market {
                     if (sellBid.quantity != 0 && buyBid.price >= sellBid.price) {
                         int maxBuyAmount = (int) Math.ceil((Math.log(sellBid.price * 1.0 / buyBid.price) / Math.log(1 / buyBid.marginalscalefactor))) + 1;
                         int maxBuyAmount2 = (int) (buyBid.spendingcap / sellBid.price);
-                        maxBuyAmount = Math.min(maxBuyAmount, maxBuyAmount2);
-                        int buyAmount = 0;
-                        if (maxBuyAmount >= sellBid.quantity) {
-                            buyAmount = buyBid.quantity;
-                        } else {
-                            buyAmount = maxBuyAmount;
-                        }
+                        int buyAmount = Math.min(Math.min(maxBuyAmount, maxBuyAmount2), sellBid.quantity);
                         if (buyAmount > 0) {
                             if (buyAmount >= sellBid.quantity) {
                                 transaction(buyBid.agent, sellBid.agent, sellBid.commodity, sellBid.quantity, sellBid.quantity * sellBid.price);
@@ -187,7 +181,7 @@ public class Market {
                                 newMarketPrice = newMarketPrice + sellBid.quantity * sellBid.price;
                                 buyBid.quantity = buyBid.quantity - sellBid.quantity;
                                 sellBid.quantity = 0;
-                                if (buyBid.quantity == 0) {
+                                if (buyBid.quantity <= 0) {
                                     break;
                                 }
                             } else {
@@ -198,7 +192,7 @@ public class Market {
                                 newMarketPrice = newMarketPrice + buyAmount * sellBid.price;
                                 sellBid.quantity = sellBid.quantity - buyAmount;
                                 buyBid.quantity = buyBid.quantity - buyAmount;
-                                if (buyBid.quantity == 0) {
+                                if (buyBid.quantity <= 0) {
                                     break;
                                 }
                             }
