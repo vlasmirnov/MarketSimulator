@@ -44,9 +44,10 @@ public class TrendPattern extends TradingPattern {
                     totalTrend += trend;
                 } else {
                     Bid sellBid = new Bid(agent, BidType.SELL, commodity, agent.inventory.get(commodity), lastMarketPrice);
-                    market.acceptBid(sellBid);
-    				System.out.println(agent.name + " wants to sell " + sellBid.quantity + " units of " + commodity.name + " for " + lastMarketPrice +  " galactic intracredits each.");
-
+                    if (agent.inventory.get(commodity) > 0) {
+                        market.acceptBid(sellBid);
+                        System.out.println(agent.name + " wants to sell " + sellBid.quantity + " units of " + commodity.name + " for " + lastMarketPrice +  " galactic intracredits each.");
+                    }
                 }
 
             }
@@ -56,10 +57,12 @@ public class TrendPattern extends TradingPattern {
                     double lastMarketPrice = commodity.marketprice;
                     double trendPercent = trend / totalTrend;
                     double spendingCap = Math.floor(agent.budget * trendPercent);
-                    int quantityToBUy = (int) Math.floor(spendingCap / lastMarketPrice);
-                    Bid bid = new Bid(agent, BidType.BUY, commodity, quantityToBUy, lastMarketPrice);
-                    market.acceptBid(bid);
-                    System.out.println(bid.agent.name + " wants to buy " + bid.quantity + " units of " + commodity.name + ", and is willing to spend " + lastMarketPrice + " galactic intracredits.");
+                    int quantityToBuy = (int) Math.floor(spendingCap / lastMarketPrice);
+                    Bid bid = new Bid(agent, BidType.BUY, commodity, quantityToBuy, lastMarketPrice);
+                    if (quantityToBuy > 0) {
+                        market.acceptBid(bid);
+                        System.out.println(bid.agent.name + " wants to buy " + bid.quantity + " units of " + commodity.name + ", and is willing to spend " + lastMarketPrice + " galactic intracredits.");
+                    }
                 }
             }
         }

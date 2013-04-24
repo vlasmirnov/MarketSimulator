@@ -176,7 +176,12 @@ public class Market {
                 for (Bid buyBid : buyList) {
                     for (Bid sellBid : sellList) {
                         if (sellBid.quantity != 0 && buyBid.price >= sellBid.price) {
-                            int maxBuyAmount = (int) Math.ceil((Math.log(sellBid.price * 1.0 / buyBid.price) / Math.log(1 / buyBid.marginalscalefactor))) + 1;
+                            int maxBuyAmount;
+                            if (buyBid.marginalscalefactor != 1){
+                                maxBuyAmount = (int) Math.ceil((Math.log(sellBid.price * 1.0 / buyBid.price) / Math.log(1 / buyBid.marginalscalefactor))) + 1;
+                            } else {
+                                maxBuyAmount = buyBid.quantity;
+                            }
                             int maxBuyAmount2 = (int) (buyBid.spendingcap / sellBid.price);
                             int buyAmount = Math.min(Math.min(maxBuyAmount, maxBuyAmount2), sellBid.quantity);
                             if (buyAmount > 0) {

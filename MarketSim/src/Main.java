@@ -12,7 +12,7 @@ public class Main {
 
     public final static Boolean DEBUGGING = false;
 
-    private final static Integer NUMBER_OF_ROUNDS = 1000;
+    private final static Integer NUMBER_OF_ROUNDS = 2000;
 
 	public static void main(String[] args) throws IOException {
 		
@@ -52,7 +52,7 @@ public class Main {
         Random rand = new Random();
 
         /*
-        Create 25 copies of four different agents
+        Create 20 copies of four different agents
          */
         for(int a = 0; a < 25; a++)
         {
@@ -61,7 +61,7 @@ public class Main {
         	newagents.add(new Agent(market, new ProducerPattern(), "Citizen " + (4*a+2), c3, 5, 2, 1000d));
         	newagents.add(new Agent(market, new ProducerPattern(), "Citizen " + (4*a+3), c4, 6, 2, 1000d));
         }
-        for(int a = 0; a < 100; a++)
+        for(int a = 0; a < 20; a++)
         {
         	int days = rand.nextInt(4) + 3;
         	newagents.add(new Agent(market, new TrendPattern(market,days), "Speculator " + a, c1, 0, 0, 1000d));
@@ -87,16 +87,16 @@ public class Main {
 	public static void displayRoundData(List<RoundData> roundDataList) throws IOException {
     	Commodity[] commodities = roundDataList.get(0).getCommodities();
     	for (Commodity commodity : commodities) {
-    		double[] marketprices = new double[NUMBER_OF_ROUNDS];
+    		double[] marketPrices = new double[NUMBER_OF_ROUNDS];
     		int i = 0;
     		for (RoundData roundData : roundDataList) {
-    			marketprices[i] = roundData.getMarketPrices().get(commodity);
+    			marketPrices[i] = roundData.getMarketPrices().get(commodity);
     			i++;
             }
     		// Filled in information on commodity prices, let's make a graph based on it now:
     		JFrame f = new JFrame();
             f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            f.add(new GraphingData(marketprices));
+            f.add(new GraphingData(marketPrices));
             f.setSize(1000,1000);
             f.setLocation(20,20);
             f.setVisible(true);
