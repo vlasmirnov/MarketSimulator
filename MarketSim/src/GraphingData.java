@@ -15,7 +15,7 @@ public class GraphingData extends JPanel {
 		}
 	}
 
-	final int PAD = 20;
+	final int PAD = 200;
 
 	protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -26,7 +26,7 @@ public class GraphingData extends JPanel {
         int h = getHeight();
         // Draw ordinate.
         g2.draw(new Line2D.Double(PAD, PAD, PAD, h-PAD));
-        // Draw abcissa.
+        // Draw abscissa.
         g2.draw(new Line2D.Double(PAD, h-PAD, w-PAD, h-PAD));
         // Draw labels.
         Font font = g2.getFont();
@@ -43,7 +43,7 @@ public class GraphingData extends JPanel {
             g2.drawString(letter, sx, sy);
             sy += sh;
         }
-        // Abcissa label.
+        // Abscissa label.
         s = "x axis";
         sy = h - PAD + (PAD - sh)/2 + lm.getAscent();
         float sw = (float)font.getStringBounds(s, frc).getWidth();
@@ -67,6 +67,28 @@ public class GraphingData extends JPanel {
             double y = h - PAD - scale*data[i];
             g2.fill(new Ellipse2D.Double(x-2, y-2, 4, 4));
         }
+        
+        xInc = (double)(w - 2*PAD)/(data.length-1);
+        scale = (double)(h - 2*PAD)/getMax();
+
+        double x = PAD + 1 * xInc;
+        sy = h - PAD + (PAD - sh)/2 + lm.getAscent();
+        
+        final int SPAD = 2;
+        s = String.valueOf(String.format("%.3g%n",getMax()));
+        sw = (float)font.getStringBounds(s, frc).getWidth();
+        sx = PAD - sw - SPAD;
+        sy = (float) (h - PAD - scale*getMax() + lm.getAscent()/2);
+        g.drawString(s, (int)sx, (int)sy);
+                
+        s = String.valueOf(commodities.length);
+        
+        sw = (float)font.getStringBounds(s, frc).getWidth();
+        sx = getWidth() - PAD - sw;
+        sy = (float) (h - PAD + scale*3 + lm.getAscent()/2);
+        
+        g.drawString(s, (int)sx, (int)sy);
+        
     }
 
 	private double getMax() {
