@@ -70,6 +70,7 @@ public class Main {
         market.agents = new Agent[newagents.size()];
         newagents.toArray(market.agents);
 
+
 		for(int a = 0; a < NUMBER_OF_ROUNDS; a++)
 		{
 		    if (DEBUGGING) {
@@ -87,6 +88,7 @@ public class Main {
 	public static void displayRoundData(List<RoundData> roundDataList) throws IOException {
     	Commodity[] commodities = roundDataList.get(0).getCommodities();
     	for (Commodity commodity : commodities) {
+
     		double[] marketPrices = new double[NUMBER_OF_ROUNDS];
     		int i = 0;
     		for (RoundData roundData : roundDataList) {
@@ -97,7 +99,7 @@ public class Main {
     		JFrame f = new JFrame();
             f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             f.add(new GraphingData(marketPrices));
-            f.setSize(1000,1000);
+            f.setSize(1500,1000);
             f.setLocation(20,20);
             f.setVisible(true);
         }
