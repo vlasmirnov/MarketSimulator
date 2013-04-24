@@ -1,4 +1,7 @@
-
+/**
+ * 
+ * 
+ */
 public class Commodity {
 
 	public int commoditynumber;
@@ -7,9 +10,13 @@ public class Commodity {
 	public double pricefloor = 0;
 	public int totalconsumption = 0;
 	public int consumption = 0;
-	
-	public Commodity(String n, int pf)
-	{
+
+	/**
+	 * 
+	 * @param n
+	 * @param pf
+	 */
+	public Commodity(String n, int pf) {
 		name = n;
 		pricefloor = pf;
 	}
