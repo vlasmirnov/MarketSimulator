@@ -70,7 +70,7 @@ public class Main {
 
 
 
-		for(int a = 0; a < 1000; a++)
+		for(int a = 0; a < 2000; a++)
 		{
 		    if (DEBUGGING) {
                 System.out.println("Trading cycle " + a);
@@ -87,7 +87,7 @@ public class Main {
 	public static void displayRoundData(List<RoundData> roundDataList) throws IOException {
     	Commodity[] commodities = roundDataList.get(0).getCommodities();
     	for (Commodity commodity : commodities) {
-    		double[] marketprices = new double[1000];
+    		double[] marketprices = new double[2000];
     		int i = 0;
     		for (RoundData roundData : roundDataList) {
     			marketprices[i] = roundData.getMarketPrices().get(commodity);
