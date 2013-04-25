@@ -1,9 +1,7 @@
 import java.util.HashMap;
-import java.util.Map.Entry;
-import java.util.Set;
 
 public class Agent{
-    private TradingPattern tradingPattern;
+    private RoundCycleTradingPattern roundCycleTradingPattern;
 	public Market market;
 	public String name;
 	public Commodity commodityProduced;
@@ -16,7 +14,7 @@ public class Agent{
     public HashMap<Commodity, Integer> shortages;
 	public double budget;
 
-	public Agent(Market market, TradingPattern tradingPattern, String name, Commodity commodityProduced, Integer productionRate, Integer consumptionRate, Double budget)
+	public Agent(Market market, RoundCycleTradingPattern roundCycleTradingPattern, String name, Commodity commodityProduced, Integer productionRate, Integer consumptionRate, Double budget)
 	{
 		this.market = market;
 		this.name = name;
@@ -38,14 +36,14 @@ public class Agent{
             previousroundpricebid.put(commodity, 0.0);
         }
 
-        this.tradingPattern = tradingPattern;
-        this.tradingPattern.agent = this;
+        this.roundCycleTradingPattern = roundCycleTradingPattern;
+        this.roundCycleTradingPattern.agent = this;
 	}
 	public void update()
 	{
-		tradingPattern.produce();
-		tradingPattern.consume();
-		tradingPattern.placeBids();
+		roundCycleTradingPattern.produce();
+		roundCycleTradingPattern.consume();
+		roundCycleTradingPattern.placeBids();
 		previousinventory = new HashMap<Commodity, Integer>();
         for (Commodity commodity : market.commodities){
             previousinventory.put(commodity, inventory.get(commodity));

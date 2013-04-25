@@ -5,13 +5,13 @@ import java.util.List;
  * User: mark.mcdonald
  * Date: 4/18/13
  */
-public class TrendPattern extends TradingPattern {
+public class TrendTradingPattern extends RoundCycleTradingPattern {
 
     private Market market;
     private int numberRoundsToTrack;
 
 
-    public TrendPattern(Market market, int numberRoundsToTrack) {
+    public TrendTradingPattern(Market market, int numberRoundsToTrack) {
         this.market = market;
         this.numberRoundsToTrack = numberRoundsToTrack;
     }
@@ -46,7 +46,6 @@ public class TrendPattern extends TradingPattern {
                     Bid sellBid = new Bid(agent, BidType.SELL, commodity, agent.inventory.get(commodity), lastMarketPrice);
                     if (agent.inventory.get(commodity) > 0) {
                         market.acceptBid(sellBid);
-                        System.out.println(agent.name + " wants to sell " + sellBid.quantity + " units of " + commodity.name + " for " + lastMarketPrice +  " galactic intracredits each.");
                     }
                 }
 
@@ -61,7 +60,6 @@ public class TrendPattern extends TradingPattern {
                     Bid bid = new Bid(agent, BidType.BUY, commodity, quantityToBuy, lastMarketPrice);
                     if (quantityToBuy > 0) {
                         market.acceptBid(bid);
-                        System.out.println(bid.agent.name + " wants to buy " + bid.quantity + " units of " + commodity.name + ", and is willing to spend " + lastMarketPrice + " galactic intracredits.");
                     }
                 }
             }

@@ -14,6 +14,10 @@ public class Main {
 
     private final static Integer NUMBER_OF_ROUNDS = 2000;
 
+    public final static Integer NUMBER_OF_PRODUCERS = 100;
+
+    public final static Integer NUMBER_OF_SPECULATORS = 20;
+
 	public static void main(String[] args) throws IOException {
 		
         Market market = new Market();
@@ -54,17 +58,21 @@ public class Main {
         /*
         Create 20 copies of four different agents
          */
-        for(int a = 0; a < 25; a++)
+        for(int a = 0; a < (NUMBER_OF_PRODUCERS / 4); a++)
         {
-        	newagents.add(new Agent(market, new ProducerPattern(), "Citizen " + 4*a, c1, 3, 2, 1000d));
-        	newagents.add(new Agent(market, new ProducerPattern(), "Citizen " + (4*a+1), c2, 4, 2, 1000d));
-        	newagents.add(new Agent(market, new ProducerPattern(), "Citizen " + (4*a+2), c3, 5, 2, 1000d));
-        	newagents.add(new Agent(market, new ProducerPattern(), "Citizen " + (4*a+3), c4, 6, 2, 1000d));
+        	newagents.add(new Agent(market, new ProducerTradingPattern(), "Citizen " + 4*a, c1, 3, 2, 1000d));
+        	newagents.add(new Agent(market, new ProducerTradingPattern(), "Citizen " + (4*a+1), c2, 4, 2, 1000d));
+        	newagents.add(new Agent(market, new ProducerTradingPattern(), "Citizen " + (4*a+2), c3, 5, 2, 1000d));
+        	newagents.add(new Agent(market, new ProducerTradingPattern(), "Citizen " + (4*a+3), c4, 6, 2, 1000d));
         }
-        for(int a = 0; a < 20; a++)
-        {
-        	int days = rand.nextInt(4) + 3;
-        	newagents.add(new Agent(market, new TrendPattern(market,days), "Speculator " + a, c1, 0, 0, 1000d));
+//        for(int a = 0; a < NUMBER_OF_SPECULATORS; a++)
+//        {
+//        	int days = rand.nextInt(4) + 3;
+//        	newagents.add(new Agent(market, new TrendTradingPattern(market,days), "Speculator " + a, null, 0, 0, 1000d));
+//        }
+        for (int a = 0; a < 20; a++){
+            int days = rand.nextInt(4) + 3;
+            newagents.add(new Agent(market, new MinMaxTradingPattern(market,days),"MinMax " + a, null,0,0,1000d));
         }
         
         market.agents = new Agent[newagents.size()];
@@ -85,7 +93,55 @@ public class Main {
 	}
 
 	public static void displayRoundData(List<RoundData> roundDataList) throws IOException {
-    	Commodity[] commodities = roundDataList.get(0).getCommodities();
+        RoundData firstRoundData = roundDataList.get(0);
+        /**
+         * Create a list of three speculators and three producers we'll track
+         */
+        List<Agent> threeSpeculators = new ArrayList<Agent>();
+        List<Agent> threeProducers = new ArrayList<Agent>();
+        for (Agent agent : firstRoundData.getAgentBudgets().keySet()){
+            if (threeProducers.size() < 3 || threeSpeculators.size() < 3){
+                if (agent.name.contains("MinMax") && threeSpeculators.size() < 3) {
+                    threeSpeculators.add(agent);
+                } else if (!agent.name.contains("MinMax") && threeProducers.size() < 3) {
+                    threeProducers.add(agent);
+                }
+            }
+        }
+
+
+            for (Agent agent : threeSpeculators){
+                double[] agentBudget = new double[NUMBER_OF_ROUNDS];
+                int i = 0;
+                for (RoundData roundData : roundDataList) {
+                    agentBudget[i] = roundData.getAgentBudgets().get(agent);
+                    i++;
+                }
+                JFrame speculatorBudgetFrame = new JFrame();
+                speculatorBudgetFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                speculatorBudgetFrame.setTitle("Budget for " + agent.name);
+                speculatorBudgetFrame.add(new GraphingData(agentBudget));
+                speculatorBudgetFrame.setSize(1000, 1000);
+                speculatorBudgetFrame.setLocation(20, 20);
+                speculatorBudgetFrame.setVisible(true);
+            }
+            for (Agent agent : threeProducers){
+                double[] agentBudget = new double[NUMBER_OF_ROUNDS];
+                int i = 0;
+                for (RoundData roundData : roundDataList) {
+                    agentBudget[i] = roundData.getAgentBudgets().get(agent);
+                    i++;
+                }
+                JFrame speculatorBudgetFrame = new JFrame();
+                speculatorBudgetFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                speculatorBudgetFrame.setTitle("Budget for " + agent.name);
+                speculatorBudgetFrame.add(new GraphingData(agentBudget));
+                speculatorBudgetFrame.setSize(1000, 1000);
+                speculatorBudgetFrame.setLocation(20, 20);
+                speculatorBudgetFrame.setVisible(true);
+            }
+
+        Commodity[] commodities = roundDataList.get(0).getCommodities();
     	for (Commodity commodity : commodities) {
     		double[] marketPrices = new double[NUMBER_OF_ROUNDS];
     		int i = 0;
@@ -94,14 +150,14 @@ public class Main {
     			i++;
             }
     		// Filled in information on commodity prices, let's make a graph based on it now:
-    		JFrame f = new JFrame();
-            f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            f.add(new GraphingData(marketPrices));
-            f.setSize(1000,1000);
-            f.setLocation(20,20);
-            f.setVisible(true);
+    		JFrame marketPriceFrame = new JFrame();
+            marketPriceFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            marketPriceFrame.setTitle("Market Price for " + commodity.name);
+            marketPriceFrame.add(new GraphingData(marketPrices));
+            marketPriceFrame.setSize(1000, 1000);
+            marketPriceFrame.setLocation(20, 20);
+            marketPriceFrame.setVisible(true);
         }
-    	
     }
 
 }

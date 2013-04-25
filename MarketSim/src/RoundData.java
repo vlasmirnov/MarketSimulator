@@ -14,9 +14,15 @@ public class RoundData {
 
     private HashMap<Commodity, Double> marketPrices = new HashMap<Commodity, Double>();
 
+    private HashMap<Agent, Integer> agentBudgets = new HashMap<Agent, Integer>();
+
     private Commodity[] commodities;
 
     public RoundData(Market market) {
+        for (Agent agent : market.agents){
+            agentBudgets.put(agent, (int) agent.budget);
+        }
+
         commodities = market.commodities;
         for (Commodity commodity : market.commodities){
             ArrayList<Bid> sellBids = market.getSellBids().get(commodity);
@@ -70,5 +76,9 @@ public class RoundData {
 
     public Commodity[] getCommodities() {
         return commodities;
+    }
+
+    public HashMap<Agent, Integer> getAgentBudgets() {
+        return agentBudgets;
     }
 }

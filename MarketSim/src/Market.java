@@ -128,19 +128,24 @@ public class Market {
      */
     public void acceptBid(Bid bid)
     {
-        Commodity bidCommodity = bid.commodity;
-        switch(bid.type){
-            case BUY:
-                ArrayList<Bid> buyBidList = buyBids.get(bidCommodity);
-                buyBidList.add(bid);
-                buyBids.put(bidCommodity, buyBidList);
-                break;
-            case SELL:
-                ArrayList<Bid> sellBidList = sellBids.get(bidCommodity);
-                sellBidList.add(bid);
-                sellBids.put(bidCommodity, sellBidList);
-                break;
+        if (bid.quantity > 0) { // only accept bids that have positive quantities
+            Commodity bidCommodity = bid.commodity;
+            switch(bid.type){
+                case BUY:
+                    ArrayList<Bid> buyBidList = buyBids.get(bidCommodity);
+                    buyBidList.add(bid);
+                    buyBids.put(bidCommodity, buyBidList);
+                    System.out.println(bid.agent.name + " wants to buy " + bid.quantity + " units of " + bid.commodity.name + " for " + bid.price +  " galactic intracredits each.");
+                    break;
+                case SELL:
+                    ArrayList<Bid> sellBidList = sellBids.get(bidCommodity);
+                    sellBidList.add(bid);
+                    sellBids.put(bidCommodity, sellBidList);
+                    System.out.println(bid.agent.name + " wants to sell " + bid.quantity + " units of " + bid.commodity.name + " for " + bid.price +  " galactic intracredits each.");
+                    break;
+            }
         }
+
     }
 
     /**
