@@ -1,8 +1,6 @@
 /**
- * User: mark.mcdonald
- * Date: 4/18/13
+ * User: mark.mcdonald Date: 4/18/13
  */
 public enum BidType {
-    BUY,
-    SELL
+	BUY, SELL
 }
