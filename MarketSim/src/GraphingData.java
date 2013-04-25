@@ -10,16 +10,35 @@ import javax.swing.*;
 public class GraphingData extends JPanel {
 	double[] commodities;
 	double[] data;
+	String xLabel;
+	String yLabel;
+	String gTitle;
 
 	/**
 	 * 
 	 * @param commodity
+	 * @param xAxisTitle
+	 * @param yAxisTitle
+	 * @param graphTitle
 	 */
-	public GraphingData(double[] commodity) {
+	public GraphingData(double[] commodity, String xAxisTitle, String yAxisTitle, String graphTitle) {
 		this.commodities = commodity;
-		this.data = new double[commodities.length / 3];
-		for (int i = 0; i < commodities.length / 3; i++) {
-			data[i] = (commodities[i] + commodities[i + 1] + commodities[i + 2]) / 3;
+		this.data = new double[(commodities.length/3)+1];
+		this.xLabel = xAxisTitle;
+		this.yLabel = yAxisTitle;
+		this.gTitle = graphTitle;
+		//System.out.println(xAxisTitle + " " + yAxisTitle);
+		int index = 0;
+		for (int i = 0; i < commodities.length; i += 3) {
+			if (i + 1 >= commodities.length)
+				data[index] = (commodities[i] + 0 + 0) / 1;
+			else if (i + 2 >= commodities.length)
+				data[index] = (commodities[i] + commodities[i + 1] + 0) / 2;
+			else
+				data[index] = (commodities[i] + commodities[i + 1] + commodities[i + 2]) / 3;
+			//System.out.println(Market.roundToDecimals(data[index],2));
+			index++;
+			
 		}
 	}
 
@@ -45,7 +64,7 @@ public class GraphingData extends JPanel {
 		LineMetrics lm = font.getLineMetrics("0", frc);
 		float sh = lm.getAscent() + lm.getDescent();
 		// Ordinate label.
-		String s = "data";
+		String s = yLabel;
 		float sy = PAD + ((h - 2 * PAD) - s.length() * sh) / 2 + lm.getAscent();
 		for (int i = 0; i < s.length(); i++) {
 			String letter = String.valueOf(s.charAt(i));
@@ -55,7 +74,7 @@ public class GraphingData extends JPanel {
 			sy += sh;
 		}
 		// Abscissa label.
-		s = "x axis";
+		s = xLabel;
 		sy = h - PAD + (PAD - sh) / 2 + lm.getAscent();
 		float sw = (float) font.getStringBounds(s, frc).getWidth();
 		float sx = (w - sw) / 2;
@@ -86,19 +105,24 @@ public class GraphingData extends JPanel {
 		sy = h - PAD + (PAD - sh) / 2 + lm.getAscent();
 
 		final int SPAD = 2;
-		s = String.valueOf(String.format("%.3g%n", getMax()));
+		
+		s = String.valueOf(GraphingData.roundToDecimals(getMax(),1));
 		sw = (float) font.getStringBounds(s, frc).getWidth();
 		sx = PAD - sw - SPAD;
 		sy = (float) (h - PAD - scale * getMax() + lm.getAscent() / 2);
 		g.drawString(s, (int) sx, (int) sy);
 
 		s = String.valueOf(commodities.length);
-
 		sw = (float) font.getStringBounds(s, frc).getWidth();
 		sx = getWidth() - PAD - sw;
-		sy = (float) (h - PAD + scale * 3 + lm.getAscent() / 2);
-
+		sy = (float) h - PAD + (PAD - sh) / 4 + lm.getAscent();
 		g.drawString(s, (int) sx, (int) sy);
+		
+		s = gTitle;
+		sy = (float) (h - PAD - scale * getMax() + lm.getAscent() / 2);
+		sw = (float) font.getStringBounds(s, frc).getWidth();
+		sx = (w - sw) / 2;
+		g2.drawString(s, sx, sy);
 
 	}
 
@@ -114,4 +138,9 @@ public class GraphingData extends JPanel {
 		}
 		return max;
 	}
+	
+	public static double roundToDecimals(double d, int c) {
+		int temp=(int)((d*Math.pow(10,c)));
+		return (((double)temp)/Math.pow(10,c));
+		}
 }

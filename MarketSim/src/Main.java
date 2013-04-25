@@ -108,7 +108,10 @@ public class Main {
                 }
             }
         }
-
+        
+        String xLabel = "Number of Rounds";
+		String yLabel = "Galactic Intracredits";
+		String gTitle = " ";
 
             for (Agent agent : threeSpeculators){
                 double[] agentBudget = new double[NUMBER_OF_ROUNDS];
@@ -120,7 +123,8 @@ public class Main {
                 JFrame speculatorBudgetFrame = new JFrame();
                 speculatorBudgetFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 speculatorBudgetFrame.setTitle("Budget for " + agent.name);
-                speculatorBudgetFrame.add(new GraphingData(agentBudget));
+                gTitle = ("Three Speculator's Summed Budgets");
+                speculatorBudgetFrame.add(new GraphingData(agentBudget, xLabel, yLabel, gTitle));
                 speculatorBudgetFrame.setSize(1000, 1000);
                 speculatorBudgetFrame.setLocation(20, 20);
                 speculatorBudgetFrame.setVisible(true);
@@ -135,7 +139,8 @@ public class Main {
                 JFrame speculatorBudgetFrame = new JFrame();
                 speculatorBudgetFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 speculatorBudgetFrame.setTitle("Budget for " + agent.name);
-                speculatorBudgetFrame.add(new GraphingData(agentBudget));
+                gTitle = ("Three Producer's Summed Budgets");
+                speculatorBudgetFrame.add(new GraphingData(agentBudget, xLabel, yLabel, gTitle));
                 speculatorBudgetFrame.setSize(1000, 1000);
                 speculatorBudgetFrame.setLocation(20, 20);
                 speculatorBudgetFrame.setVisible(true);
@@ -149,11 +154,11 @@ public class Main {
     			marketPrices[i] = roundData.getMarketPrices().get(commodity);
     			i++;
             }
-    		// Filled in information on commodity prices, let's make a graph based on it now:
     		JFrame marketPriceFrame = new JFrame();
             marketPriceFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             marketPriceFrame.setTitle("Market Price for " + commodity.name);
-            marketPriceFrame.add(new GraphingData(marketPrices));
+            gTitle = ("Market Value of Commodity: " + commodity.name);
+            marketPriceFrame.add(new GraphingData(marketPrices, xLabel, yLabel, gTitle));
             marketPriceFrame.setSize(1000, 1000);
             marketPriceFrame.setLocation(20, 20);
             marketPriceFrame.setVisible(true);
