@@ -2,8 +2,9 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * User: mark.mcdonald
- * Date: 4/18/13
+ * 
+ * User: mark.mcdonald Date: 4/18/13
+ * 
  */
 public class TrendTradingPattern extends RoundCycleTradingPattern {
 

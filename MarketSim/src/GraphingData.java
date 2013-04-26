@@ -5,6 +5,7 @@ import javax.swing.*;
 
 /**
  * 
+ * This class takes in the graphing properties and draws them.
  * 
  */
 public class GraphingData extends JPanel {
@@ -15,15 +16,21 @@ public class GraphingData extends JPanel {
 	String gTitle;
 
 	/**
+	 * The constructor that initializes the graph with inputs.
 	 * 
 	 * @param array
+	 *            : the array of doubles to be taken in for graph input data.
 	 * @param xAxisTitle
+	 *            : the label to be set in the graph for x-axis.
 	 * @param yAxisTitle
+	 *            : the label to be set in the graph for y-axis.
 	 * @param graphTitle
+	 *            : the title to be set in the graph.
 	 */
-	public GraphingData(double[] array, String xAxisTitle, String yAxisTitle, String graphTitle) {
+	public GraphingData(double[] array, String xAxisTitle, String yAxisTitle,
+			String graphTitle) {
 		this.list = array;
-		this.data = new double[(list.length/3)+1];
+		this.data = new double[(list.length / 3) + 1];
 		this.xLabel = xAxisTitle;
 		this.yLabel = yAxisTitle;
 		this.gTitle = graphTitle;
@@ -36,14 +43,14 @@ public class GraphingData extends JPanel {
 			else
 				data[index] = (list[i] + list[i + 1] + list[i + 2]) / 3;
 			index++;
-			
+
 		}
 	}
 
 	final int PAD = 50;
 
 	/**
-	 * 
+	 * Draws the graph.
 	 */
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
@@ -103,19 +110,19 @@ public class GraphingData extends JPanel {
 		sy = h - PAD + (PAD - sh) / 2 + lm.getAscent();
 
 		final int SPAD = 2;
-		//Draw Max Y-axis Value.
-		s = String.valueOf(GraphingData.roundToDecimals(getMax(),1));
+		// Draw Max Y-axis Value.
+		s = String.valueOf(GraphingData.roundToDecimals(getMax(), 1));
 		sw = (float) font.getStringBounds(s, frc).getWidth();
 		sx = PAD - sw - SPAD;
 		sy = (float) (h - PAD - scale * getMax() + lm.getAscent() / 2);
 		g.drawString(s, (int) sx, (int) sy);
-		//Draw Max X-axis Value.
+		// Draw Max X-axis Value.
 		s = String.valueOf(list.length);
 		sw = (float) font.getStringBounds(s, frc).getWidth();
 		sx = getWidth() - PAD - sw;
 		sy = (float) h - PAD + (PAD - sh) / 4 + lm.getAscent();
 		g.drawString(s, (int) sx, (int) sy);
-		//Draw Graph Title.
+		// Draw Graph Title.
 		s = gTitle;
 		sy = (float) (h - PAD - scale * getMax() - 20 + lm.getAscent() / 2);
 		sw = (float) font.getStringBounds(s, frc).getWidth();
@@ -125,8 +132,9 @@ public class GraphingData extends JPanel {
 	}
 
 	/**
+	 * Gets the max value index from double array, data.
 	 * 
-	 * @return
+	 * @return : the index of the max value inside the input data array.
 	 */
 	private double getMax() {
 		double max = -Integer.MAX_VALUE;
@@ -136,15 +144,19 @@ public class GraphingData extends JPanel {
 		}
 		return max;
 	}
-	
+
 	/**
 	 * Algorithm for Decimal Redux.
-	 * @param d the number to be reduced in decimal place.
-	 * @param c the number that determines by how many decimal places to be reduced.
+	 * 
+	 * @param d
+	 *            the number to be reduced in decimal place.
+	 * @param c
+	 *            the number that determines by how many decimal places to be
+	 *            reduced.
 	 * @return the reduced in decimal places number.
 	 */
 	public static double roundToDecimals(double d, int c) {
-		int temp=(int)((d*Math.pow(10,c)));
-		return (((double)temp)/Math.pow(10,c));
-		}
+		int temp = (int) ((d * Math.pow(10, c)));
+		return (((double) temp) / Math.pow(10, c));
+	}
 }

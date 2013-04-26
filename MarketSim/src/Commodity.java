@@ -1,5 +1,6 @@
 /**
  * 
+ * This class supplies the means to create commodities with few properties.
  * 
  */
 public class Commodity {
@@ -14,7 +15,9 @@ public class Commodity {
 	/**
 	 * 
 	 * @param n
+	 *            : the name of commodity.
 	 * @param pf
+	 *            : the floor price of commodity.
 	 */
 	public Commodity(String n, int pf) {
 		name = n;
