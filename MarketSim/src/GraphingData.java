@@ -8,7 +8,7 @@ import javax.swing.*;
  * 
  */
 public class GraphingData extends JPanel {
-	double[] commodities;
+	double[] list;
 	double[] data;
 	String xLabel;
 	String yLabel;
@@ -16,27 +16,25 @@ public class GraphingData extends JPanel {
 
 	/**
 	 * 
-	 * @param commodity
+	 * @param array
 	 * @param xAxisTitle
 	 * @param yAxisTitle
 	 * @param graphTitle
 	 */
-	public GraphingData(double[] commodity, String xAxisTitle, String yAxisTitle, String graphTitle) {
-		this.commodities = commodity;
-		this.data = new double[(commodities.length/3)+1];
+	public GraphingData(double[] array, String xAxisTitle, String yAxisTitle, String graphTitle) {
+		this.list = array;
+		this.data = new double[(list.length/3)+1];
 		this.xLabel = xAxisTitle;
 		this.yLabel = yAxisTitle;
 		this.gTitle = graphTitle;
-		//System.out.println(xAxisTitle + " " + yAxisTitle);
 		int index = 0;
-		for (int i = 0; i < commodities.length; i += 3) {
-			if (i + 1 >= commodities.length)
-				data[index] = (commodities[i] + 0 + 0) / 1;
-			else if (i + 2 >= commodities.length)
-				data[index] = (commodities[i] + commodities[i + 1] + 0) / 2;
+		for (int i = 0; i < list.length; i += 3) {
+			if (i + 1 >= list.length)
+				data[index] = (list[i] + 0 + 0) / 1;
+			else if (i + 2 >= list.length)
+				data[index] = (list[i] + list[i + 1] + 0) / 2;
 			else
-				data[index] = (commodities[i] + commodities[i + 1] + commodities[i + 2]) / 3;
-			//System.out.println(Market.roundToDecimals(data[index],2));
+				data[index] = (list[i] + list[i + 1] + list[i + 2]) / 3;
 			index++;
 			
 		}
@@ -54,16 +52,16 @@ public class GraphingData extends JPanel {
 				RenderingHints.VALUE_ANTIALIAS_ON);
 		int w = getWidth();
 		int h = getHeight();
-		// Draw ordinate.
+		// Draws the ordinate.
 		g2.draw(new Line2D.Double(PAD, PAD, PAD, h - PAD));
-		// Draw abscissa.
+		// Draws the abscissa.
 		g2.draw(new Line2D.Double(PAD, h - PAD, w - PAD, h - PAD));
-		// Draw labels.
+		// Draws the labels.
 		Font font = g2.getFont();
 		FontRenderContext frc = g2.getFontRenderContext();
 		LineMetrics lm = font.getLineMetrics("0", frc);
 		float sh = lm.getAscent() + lm.getDescent();
-		// Ordinate label.
+		// y Axis label.
 		String s = yLabel;
 		float sy = PAD + ((h - 2 * PAD) - s.length() * sh) / 2 + lm.getAscent();
 		for (int i = 0; i < s.length(); i++) {
@@ -73,7 +71,7 @@ public class GraphingData extends JPanel {
 			g2.drawString(letter, sx, sy);
 			sy += sh;
 		}
-		// Abscissa label.
+		// x Axis label.
 		s = xLabel;
 		sy = h - PAD + (PAD - sh) / 2 + lm.getAscent();
 		float sw = (float) font.getStringBounds(s, frc).getWidth();
@@ -90,7 +88,7 @@ public class GraphingData extends JPanel {
 			double y2 = h - PAD - scale * data[i + 1];
 			g2.draw(new Line2D.Double(x1, y1, x2, y2));
 		}
-		// Mark data points.
+		// Mark Data points.
 		g2.setPaint(Color.red);
 		for (int i = 0; i < data.length; i++) {
 			double x = PAD + i * xInc;
@@ -105,19 +103,19 @@ public class GraphingData extends JPanel {
 		sy = h - PAD + (PAD - sh) / 2 + lm.getAscent();
 
 		final int SPAD = 2;
-		
+		//Draw Max Y-axis Value.
 		s = String.valueOf(GraphingData.roundToDecimals(getMax(),1));
 		sw = (float) font.getStringBounds(s, frc).getWidth();
 		sx = PAD - sw - SPAD;
 		sy = (float) (h - PAD - scale * getMax() + lm.getAscent() / 2);
 		g.drawString(s, (int) sx, (int) sy);
-
-		s = String.valueOf(commodities.length);
+		//Draw Max X-axis Value.
+		s = String.valueOf(list.length);
 		sw = (float) font.getStringBounds(s, frc).getWidth();
 		sx = getWidth() - PAD - sw;
 		sy = (float) h - PAD + (PAD - sh) / 4 + lm.getAscent();
 		g.drawString(s, (int) sx, (int) sy);
-		
+		//Draw Graph Title.
 		s = gTitle;
 		sy = (float) (h - PAD - scale * getMax() - 20 + lm.getAscent() / 2);
 		sw = (float) font.getStringBounds(s, frc).getWidth();
@@ -139,6 +137,12 @@ public class GraphingData extends JPanel {
 		return max;
 	}
 	
+	/**
+	 * Algorithm for Decimal Redux.
+	 * @param d the number to be reduced in decimal place.
+	 * @param c the number that determines by how many decimal places to be reduced.
+	 * @return the reduced in decimal places number.
+	 */
 	public static double roundToDecimals(double d, int c) {
 		int temp=(int)((d*Math.pow(10,c)));
 		return (((double)temp)/Math.pow(10,c));

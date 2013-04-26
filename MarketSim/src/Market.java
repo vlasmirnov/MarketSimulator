@@ -82,25 +82,27 @@ public class Market {
      *  Prints out the current simulation information TODO: turn datapoints into csv / excell file to analyze
      */
     public void printMarketInformation(){
-        if (!Main.DEBUGGING) {
+        if (Main.DEBUGGING) {
             System.out.println("Trading cycle: " + marketCycle);
             System.out.println("______________________");
-            //System.out.println("Current market prices:");
+            System.out.println("Current market prices:");
         }
         String marketcsvline = "";
         String entitiescsvline = "";
         for (Commodity commodity : commodities){
-            //System.out.println(commodity.name + ": " + commodity.marketprice);
+            if(Main.DEBUGGING) 
+            	System.out.println(commodity.name + ": " + commodity.marketprice);
             marketcsvline = marketcsvline + commodity.marketprice + ",";
             entitiescsvline = entitiescsvline + commodity.consumption + ",";
         }
         double budgetvar = budgetVariance();
         entitiescsvline = entitiescsvline + budgetvar;
 
-		// System.out.println("Current budgets:");
+        if(Main.DEBUGGING)
+        	System.out.println("Current budgets:");
 		for (Agent agent : agents) {
-			// System.out.println("Agent: " + agent.name + " with Budget: " +
-			// GraphingData.roundToDecimals(agent.budget,2));
+			if(Main.DEBUGGING)
+				System.out.println("Agent: " + agent.name + " with Budget: " + GraphingData.roundToDecimals(agent.budget,2));
 			if (agent.name.contains("Citizen"))
 				budgetSumP = agent.budget + budgetSumP;
 			else
@@ -149,13 +151,15 @@ public class Market {
                     ArrayList<Bid> buyBidList = buyBids.get(bidCommodity);
                     buyBidList.add(bid);
                     buyBids.put(bidCommodity, buyBidList);
-                    //System.out.println(bid.agent.name + " wants to buy " + bid.quantity + " units of " + bid.commodity.name + " for " + bid.price +  " galactic intracredits each.");
+                    if(Main.DEBUGGING)
+                    	System.out.println(bid.agent.name + " wants to buy " + bid.quantity + " units of " + bid.commodity.name + " for " + GraphingData.roundToDecimals(bid.price,2) +  " Galactic Intracredits each.");
                     break;
                 case SELL:
                     ArrayList<Bid> sellBidList = sellBids.get(bidCommodity);
                     sellBidList.add(bid);
                     sellBids.put(bidCommodity, sellBidList);
-                    //System.out.println(bid.agent.name + " wants to sell " + bid.quantity + " units of " + bid.commodity.name + " for " + bid.price +  " galactic intracredits each.");
+                    if(Main.DEBUGGING)
+                    	System.out.println(bid.agent.name + " wants to sell " + bid.quantity + " units of " + bid.commodity.name + " for " + GraphingData.roundToDecimals(bid.price,2) +  " Galactic Intracredits each.");
                     break;
             }
         }
@@ -284,7 +288,7 @@ public class Market {
         seller.budget = seller.budget + price;
         buyer.inventory.put(commodity, buyer.inventory.get(commodity) + quantity);
         seller.inventory.put(commodity, seller.inventory.get(commodity) - quantity);
-        //System.out.println(buyer.name + " bought " + quantity + " units of " + commodity.name + " from " + seller.name + " at " + price/quantity + " galactic intracredits each");
+        //System.out.println(buyer.name + " bought " + quantity + " units of " + commodity.name + " from " + seller.name + " at " + GraphingData.roundToDecimals(price/quantity,2) + " Galactic Intracredits each");
     }
 
 
