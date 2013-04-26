@@ -14,6 +14,12 @@ public class Main {
 
     public final static Integer NUMBER_OF_ROUNDS = 2000, NUMBER_OF_PRODUCERS = 100, NUMBER_OF_SPECULATORS = 20, NUMBER_OF_MINMAX = 20, GRAPH_WIDTH = 1500, GRAPH_HEIGHT = 1000;
 
+    private final static Double PRODUCER_STARTING_BUDGET = 1000d;
+
+    private final static Double SPECULATOR_STARTING_BUDGET = 1000d;
+
+    private final static Double MIN_MAX_STARTING_BUDGET = 1000d;
+
 	public static void main(String[] args) throws IOException {
 		
         Market market = new Market();
@@ -56,19 +62,14 @@ public class Main {
          */
         for(int a = 0; a < (NUMBER_OF_PRODUCERS / 4); a++)
         {
-        	newagents.add(new Agent(market, new ProducerTradingPattern(), "Citizen " + 4*a, c1, 3, 2, 1000d));
-        	newagents.add(new Agent(market, new ProducerTradingPattern(), "Citizen " + (4*a+1), c2, 4, 2, 1000d));
-        	newagents.add(new Agent(market, new ProducerTradingPattern(), "Citizen " + (4*a+2), c3, 5, 2, 1000d));
-        	newagents.add(new Agent(market, new ProducerTradingPattern(), "Citizen " + (4*a+3), c4, 6, 2, 1000d));
+        	newagents.add(new Agent(market, new ProducerTradingPattern(), "Citizen " + 4*a, c1, 3, 2, PRODUCER_STARTING_BUDGET));
+        	newagents.add(new Agent(market, new ProducerTradingPattern(), "Citizen " + (4*a+1), c2, 4, 2, PRODUCER_STARTING_BUDGET));
+        	newagents.add(new Agent(market, new ProducerTradingPattern(), "Citizen " + (4*a+2), c3, 5, 2, PRODUCER_STARTING_BUDGET));
+        	newagents.add(new Agent(market, new ProducerTradingPattern(), "Citizen " + (4*a+3), c4, 6, 2, PRODUCER_STARTING_BUDGET));
         }
-//        for(int a = 0; a < NUMBER_OF_SPECULATORS; a++)
-//        {
-//        	int days = rand.nextInt(4) + 3;
-//        	newagents.add(new Agent(market, new TrendTradingPattern(market,days), "Speculator " + a, null, 0, 0, 1000d));
-//        }
         for (int a = 0; a < NUMBER_OF_MINMAX; a++){
             int days = rand.nextInt(4) + 3;
-            newagents.add(new Agent(market, new MinMaxTradingPattern(market,days),"MinMax " + a, null,0,0,1000d));
+            newagents.add(new Agent(market, new MinMaxTradingPattern(market,days),"MinMax " + a, null,0,0,SPECULATOR_STARTING_BUDGET));
         }
         
         market.agents = new Agent[newagents.size()];
