@@ -12,13 +12,26 @@ public class Main {
 
     public final static Boolean DEBUGGING = false;
 
-    public final static Integer NUMBER_OF_ROUNDS = 2000, NUMBER_OF_PRODUCERS = 100, NUMBER_OF_SPECULATORS = 20, NUMBER_OF_MINMAX = 20, GRAPH_WIDTH = 1500, GRAPH_HEIGHT = 1000;
+    public final static Integer GRAPH_WIDTH = 1500, GRAPH_HEIGHT = 1000;
 
-    private final static Double PRODUCER_STARTING_BUDGET = 1000d;
+    public final static Integer NUMBER_OF_COMMODITIES = 4;
 
-    private final static Double SPECULATOR_STARTING_BUDGET = 1000d;
+    public final static Integer COMMODITY_PRICE_FLOOR = 1;
 
-    private final static Double MIN_MAX_STARTING_BUDGET = 1000d;
+    public final static Integer NUMBER_OF_ROUNDS = 2000;
+
+    public final static Integer NUMBER_OF_PRODUCERS = 100, NUMBER_OF_SPECULATORS = 20, NUMBER_OF_MINMAX = 0;
+
+    public final static Double PRODUCER_STARTING_BUDGET = 1000d;
+
+    public final static Double SPECULATOR_STARTING_BUDGET = 1000d;
+
+    public final static Double MIN_MAX_STARTING_BUDGET = 1000d;
+
+    public final static Integer PRODUCER_CONSUMPTION_RATE = 2;
+
+    // The maximum amount a producer may create in one round
+    private final static Integer PRODUCER_PRODUCTION_STARTING_RATE = 3, PRODUCER_PRODUCTION_INCREASE = 1;
 
 	public static void main(String[] args) throws IOException {
 		
@@ -47,29 +60,39 @@ public class Main {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-        
-        Commodity c1 = new Commodity("Ware A", 1);
-        Commodity c2 = new Commodity("Ware B", 1);
-        Commodity c3 = new Commodity("Ware C", 1);
-        Commodity c4 = new Commodity("Ware D", 1);
-        market.commodities = new Commodity[]{c1,c2,c3, c4};
 
-        ArrayList<Agent> newagents = new ArrayList<Agent>();
+        /**
+         * Set up market commodities based off configurations
+         */
+        List<Commodity> commodities = new ArrayList<Commodity>();
+        for (int a = 0; a < NUMBER_OF_COMMODITIES; a ++) {
+            Commodity commodity = new Commodity("Ware " + a, COMMODITY_PRICE_FLOOR);
+            commodities.add(commodity);
+        }
+        market.commodities = new Commodity[commodities.size()];
+        commodities.toArray(market.commodities);
+
         Random rand = new Random();
 
+        ArrayList<Agent> newagents = new ArrayList<Agent>();
+
         /*
-        Create 20 copies of four different agents
+        Create copies of agents - each agent will only produce one kind of commodity
          */
-        for(int a = 0; a < (NUMBER_OF_PRODUCERS / 4); a++)
-        {
-        	newagents.add(new Agent(market, new ProducerTradingPattern(), "Citizen " + 4*a, c1, 3, 2, PRODUCER_STARTING_BUDGET));
-        	newagents.add(new Agent(market, new ProducerTradingPattern(), "Citizen " + (4*a+1), c2, 4, 2, PRODUCER_STARTING_BUDGET));
-        	newagents.add(new Agent(market, new ProducerTradingPattern(), "Citizen " + (4*a+2), c3, 5, 2, PRODUCER_STARTING_BUDGET));
-        	newagents.add(new Agent(market, new ProducerTradingPattern(), "Citizen " + (4*a+3), c4, 6, 2, PRODUCER_STARTING_BUDGET));
+
+        for (int i = 0; i < NUMBER_OF_COMMODITIES; i++) {
+            for(int a = 0; a < (NUMBER_OF_PRODUCERS / NUMBER_OF_COMMODITIES); a++)
+            {
+                newagents.add(new Agent(market, new ProducerTradingPattern(), "Citizen " + i, commodities.get(i), PRODUCER_PRODUCTION_STARTING_RATE + PRODUCER_PRODUCTION_INCREASE * i, PRODUCER_CONSUMPTION_RATE, PRODUCER_STARTING_BUDGET));
+            }
         }
         for (int a = 0; a < NUMBER_OF_MINMAX; a++){
             int days = rand.nextInt(4) + 3;
-            newagents.add(new Agent(market, new MinMaxTradingPattern(market,days),"MinMax " + a, null,0,0,SPECULATOR_STARTING_BUDGET));
+            newagents.add(new Agent(market, new MinMaxTradingPattern(market,days),"MinMax " + a, null,0,0,MIN_MAX_STARTING_BUDGET));
+        }
+        for (int a = 0; a < NUMBER_OF_SPECULATORS; a++) {
+            int days = rand.nextInt(4) + 3;
+            newagents.add(new Agent(market, new TrendTradingPattern(market,days),"Speculator " + a,null,0,0,SPECULATOR_STARTING_BUDGET));
         }
         
         market.agents = new Agent[newagents.size()];
@@ -90,58 +113,9 @@ public class Main {
 	}
 
 	public static void displayRoundData(List<RoundData> roundDataList) throws IOException {
-        RoundData firstRoundData = roundDataList.get(0);
-        /**
-         * Create a list of three speculators and three producers we'll track
-         */
-        List<Agent> threeSpeculators = new ArrayList<Agent>();
-        List<Agent> threeProducers = new ArrayList<Agent>();
-        for (Agent agent : firstRoundData.getAgentBudgets().keySet()){
-            if (threeProducers.size() < 3 || threeSpeculators.size() < 3){
-                if (agent.name.contains("MinMax") && threeSpeculators.size() < 3) {
-                    threeSpeculators.add(agent);
-                } else if (!agent.name.contains("MinMax") && threeProducers.size() < 3) {
-                    threeProducers.add(agent);
-                }
-            }
-        }
-        
         String xLabel = "Number of Rounds";
 		String yLabel = "Galactic Intracredits";
 		String gTitle = " ";
-
-            for (Agent agent : threeSpeculators){
-                double[] agentBudget = new double[NUMBER_OF_ROUNDS];
-                int i = 0;
-                for (RoundData roundData : roundDataList) {
-                    agentBudget[i] = roundData.getAgentBudgets().get(agent);
-                    i++;
-                }
-                JFrame speculatorBudgetFrame = new JFrame();
-                speculatorBudgetFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                speculatorBudgetFrame.setTitle("Budget for " + agent.name);
-                gTitle = ("Three Speculator's Summed Budgets per Round");
-                speculatorBudgetFrame.add(new GraphingData(agentBudget, xLabel, yLabel, gTitle));
-                speculatorBudgetFrame.setSize(GRAPH_WIDTH, GRAPH_HEIGHT);
-                speculatorBudgetFrame.setLocation(20, 20);
-                speculatorBudgetFrame.setVisible(true);
-            }
-            for (Agent agent : threeProducers){
-                double[] agentBudget = new double[NUMBER_OF_ROUNDS];
-                int i = 0;
-                for (RoundData roundData : roundDataList) {
-                    agentBudget[i] = roundData.getAgentBudgets().get(agent);
-                    i++;
-                }
-                JFrame producerBudgetFrame = new JFrame();
-                producerBudgetFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                producerBudgetFrame.setTitle("Budget for " + agent.name);
-                gTitle = ("Three Producer's Summed Budgets per Round");
-                producerBudgetFrame.add(new GraphingData(agentBudget, xLabel, yLabel, gTitle));
-                producerBudgetFrame.setSize(GRAPH_WIDTH, GRAPH_HEIGHT);
-                producerBudgetFrame.setLocation(20, 20);
-                producerBudgetFrame.setVisible(true);
-            }
 
         Commodity[] commodities = roundDataList.get(0).getCommodities();
     	for (Commodity commodity : commodities) {
@@ -159,14 +133,13 @@ public class Main {
             marketPriceFrame.setSize(GRAPH_WIDTH, GRAPH_HEIGHT);
             marketPriceFrame.setLocation(20, 20);
             marketPriceFrame.setVisible(true);
-        
         }
 
     	JFrame avgProdBudgetFrame = new JFrame();
         avgProdBudgetFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         avgProdBudgetFrame.setTitle("Average Budgets of Producers");
         gTitle = ("Average Budgets of Producers per Round");
-        avgProdBudgetFrame.add(new GraphingData(Market.budgetArrayP, xLabel, yLabel, gTitle));
+        avgProdBudgetFrame.add(new GraphingData(Market.budgetArrayProducers, xLabel, yLabel, gTitle));
         avgProdBudgetFrame.setSize(GRAPH_WIDTH, GRAPH_HEIGHT);
         avgProdBudgetFrame.setLocation(20, 20);
         avgProdBudgetFrame.setVisible(true);
@@ -175,11 +148,20 @@ public class Main {
         avgSpecBudgetFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         avgSpecBudgetFrame.setTitle("Average Budgets of Speculators");
         gTitle = ("Average Budgets of Speculators per Round");
-        avgSpecBudgetFrame.add(new GraphingData(Market.budgetArrayM, xLabel, yLabel, gTitle));
+        avgSpecBudgetFrame.add(new GraphingData(Market.budgetArraySpeculators, xLabel, yLabel, gTitle));
         avgSpecBudgetFrame.setSize(GRAPH_WIDTH, GRAPH_HEIGHT);
         avgSpecBudgetFrame.setLocation(20, 20);
         avgSpecBudgetFrame.setVisible(true);
-        
+
+        JFrame avgMinMaxBudgetFrame = new JFrame();
+        avgMinMaxBudgetFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        avgMinMaxBudgetFrame.setTitle("Average Budgets of Min Max Traders");
+        gTitle = ("Average budgets of Min Max Traders per Round");
+        avgMinMaxBudgetFrame.add(new GraphingData(Market.budgetArrayMinMaxers, xLabel, yLabel, gTitle));
+        avgMinMaxBudgetFrame.setSize(GRAPH_WIDTH, GRAPH_HEIGHT);
+        avgSpecBudgetFrame.setLocation(20,20);
+        avgSpecBudgetFrame.setVisible(true);
+
     }
 
 }

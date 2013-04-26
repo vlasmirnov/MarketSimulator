@@ -11,8 +11,8 @@ public class Market {
     public Commodity[] commodities;
     public Agent[] agents;
     private int marketCycle = 0;
-    private double budgetSumP = 1000, budgetSumM = 1000;
-    public static double[] budgetArrayP, budgetArrayM;
+    private double budgetSumProducers = Main.PRODUCER_STARTING_BUDGET, budgetSumMinMaxers = Main.MIN_MAX_STARTING_BUDGET, budgetSumSpeculators = Main.SPECULATOR_STARTING_BUDGET;
+    public static double[] budgetArrayProducers, budgetArraySpeculators, budgetArrayMinMaxers;
     public BufferedWriter marketBufferedWriter;
     public BufferedWriter commoditiesBufferedWriter;
     private HashMap<Commodity, ArrayList<Bid>> buyBids;
@@ -23,8 +23,9 @@ public class Market {
 
     public Market()
     {
-    	budgetArrayP = new double[Main.NUMBER_OF_ROUNDS];
-    	budgetArrayM = new double[Main.NUMBER_OF_ROUNDS];
+    	budgetArrayProducers = new double[Main.NUMBER_OF_ROUNDS];
+    	budgetArraySpeculators = new double[Main.NUMBER_OF_ROUNDS];
+        budgetArrayMinMaxers = new double[Main.NUMBER_OF_ROUNDS];
     }
 
     /**
@@ -43,10 +44,12 @@ public class Market {
 
         printMarketInformation();
         
-        budgetArrayP[marketCycle]=budgetSumP/(Main.NUMBER_OF_PRODUCERS-1);
-        budgetArrayM[marketCycle]=budgetSumM/(Main.NUMBER_OF_MINMAX-1);
-        budgetSumP = 0;
-        budgetSumM = 0;
+        budgetArrayProducers[marketCycle]= budgetSumProducers /(Main.NUMBER_OF_PRODUCERS-1);
+        budgetArraySpeculators[marketCycle]= budgetSumSpeculators /(Main.NUMBER_OF_SPECULATORS-1);
+        budgetArrayMinMaxers[marketCycle] = budgetSumMinMaxers / (Main.NUMBER_OF_MINMAX-1);
+        budgetSumProducers = 0;
+        budgetSumMinMaxers = 0;
+        budgetSumSpeculators = 0;
         RoundData roundData = new RoundData(this);
         roundDataList.add(roundData);
         
@@ -104,9 +107,13 @@ public class Market {
 			if(Main.DEBUGGING)
 				System.out.println("Agent: " + agent.name + " with Budget: " + GraphingData.roundToDecimals(agent.budget,2));
 			if (agent.name.contains("Citizen"))
-				budgetSumP = agent.budget + budgetSumP;
-			else
-				budgetSumM = agent.budget + budgetSumM;
+				budgetSumProducers += agent.budget;
+			else if (agent.name.contains("culat")) {
+                budgetSumMinMaxers += agent.budget;
+            } else {
+                budgetSumMinMaxers += agent.budget;
+            }
+
 		}
 
         try {
