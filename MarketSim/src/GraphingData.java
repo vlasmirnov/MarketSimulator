@@ -119,7 +119,7 @@ public class GraphingData extends JPanel {
 		g.drawString(s, (int) sx, (int) sy);
 		
 		s = gTitle;
-		sy = (float) (h - PAD - scale * getMax() + lm.getAscent() / 2);
+		sy = (float) (h - PAD - scale * getMax() - 20 + lm.getAscent() / 2);
 		sw = (float) font.getStringBounds(s, frc).getWidth();
 		sx = (w - sw) / 2;
 		g2.drawString(s, sx, sy);

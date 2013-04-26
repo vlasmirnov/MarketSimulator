@@ -12,13 +12,7 @@ public class Main {
 
     public final static Boolean DEBUGGING = false;
 
-    public final static Integer NUMBER_OF_ROUNDS = 2000;
-
-    public final static Integer NUMBER_OF_PRODUCERS = 100;
-
-    public final static Integer NUMBER_OF_SPECULATORS = 20;
-    
-    public final static Integer NUMBER_OF_MINMAX = 20;
+    public final static Integer NUMBER_OF_ROUNDS = 2000, NUMBER_OF_PRODUCERS = 100, NUMBER_OF_SPECULATORS = 20, NUMBER_OF_MINMAX = 20, GRAPH_WIDTH = 1500, GRAPH_HEIGHT = 1000;
 
 	public static void main(String[] args) throws IOException {
 		
@@ -125,9 +119,9 @@ public class Main {
                 JFrame speculatorBudgetFrame = new JFrame();
                 speculatorBudgetFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 speculatorBudgetFrame.setTitle("Budget for " + agent.name);
-                gTitle = ("Three Speculator's Summed Budgets");
+                gTitle = ("Three Speculator's Summed Budgets per Round");
                 speculatorBudgetFrame.add(new GraphingData(agentBudget, xLabel, yLabel, gTitle));
-                speculatorBudgetFrame.setSize(1000, 1000);
+                speculatorBudgetFrame.setSize(GRAPH_WIDTH, GRAPH_HEIGHT);
                 speculatorBudgetFrame.setLocation(20, 20);
                 speculatorBudgetFrame.setVisible(true);
             }
@@ -141,9 +135,9 @@ public class Main {
                 JFrame producerBudgetFrame = new JFrame();
                 producerBudgetFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 producerBudgetFrame.setTitle("Budget for " + agent.name);
-                gTitle = ("Three Producer's Summed Budgets");
+                gTitle = ("Three Producer's Summed Budgets per Round");
                 producerBudgetFrame.add(new GraphingData(agentBudget, xLabel, yLabel, gTitle));
-                producerBudgetFrame.setSize(1000, 1000);
+                producerBudgetFrame.setSize(GRAPH_WIDTH, GRAPH_HEIGHT);
                 producerBudgetFrame.setLocation(20, 20);
                 producerBudgetFrame.setVisible(true);
             }
@@ -161,7 +155,7 @@ public class Main {
             marketPriceFrame.setTitle("Market Price for " + commodity.name);
             gTitle = ("Market Value of Commodity: " + commodity.name);
             marketPriceFrame.add(new GraphingData(marketPrices, xLabel, yLabel, gTitle));
-            marketPriceFrame.setSize(1000, 1000);
+            marketPriceFrame.setSize(GRAPH_WIDTH, GRAPH_HEIGHT);
             marketPriceFrame.setLocation(20, 20);
             marketPriceFrame.setVisible(true);
         
@@ -172,7 +166,7 @@ public class Main {
         avgProdBudgetFrame.setTitle("Average Budgets of Producers");
         gTitle = ("Average Budgets of Producers per Round");
         avgProdBudgetFrame.add(new GraphingData(Market.budgetArrayP, xLabel, yLabel, gTitle));
-        avgProdBudgetFrame.setSize(1000, 1000);
+        avgProdBudgetFrame.setSize(GRAPH_WIDTH, GRAPH_HEIGHT);
         avgProdBudgetFrame.setLocation(20, 20);
         avgProdBudgetFrame.setVisible(true);
         
@@ -181,7 +175,7 @@ public class Main {
         avgSpecBudgetFrame.setTitle("Average Budgets of Speculators");
         gTitle = ("Average Budgets of Speculators per Round");
         avgSpecBudgetFrame.add(new GraphingData(Market.budgetArrayM, xLabel, yLabel, gTitle));
-        avgSpecBudgetFrame.setSize(1000, 1000);
+        avgSpecBudgetFrame.setSize(GRAPH_WIDTH, GRAPH_HEIGHT);
         avgSpecBudgetFrame.setLocation(20, 20);
         avgSpecBudgetFrame.setVisible(true);
     	
