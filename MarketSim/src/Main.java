@@ -12,11 +12,13 @@ public class Main {
 
     public final static Boolean DEBUGGING = false;
 
-    private final static Integer NUMBER_OF_ROUNDS = 2000;
+    public final static Integer NUMBER_OF_ROUNDS = 2000;
 
     public final static Integer NUMBER_OF_PRODUCERS = 100;
 
     public final static Integer NUMBER_OF_SPECULATORS = 20;
+    
+    public final static Integer NUMBER_OF_MINMAX = 20;
 
 	public static void main(String[] args) throws IOException {
 		
@@ -70,7 +72,7 @@ public class Main {
 //        	int days = rand.nextInt(4) + 3;
 //        	newagents.add(new Agent(market, new TrendTradingPattern(market,days), "Speculator " + a, null, 0, 0, 1000d));
 //        }
-        for (int a = 0; a < 20; a++){
+        for (int a = 0; a < NUMBER_OF_MINMAX; a++){
             int days = rand.nextInt(4) + 3;
             newagents.add(new Agent(market, new MinMaxTradingPattern(market,days),"MinMax " + a, null,0,0,1000d));
         }
@@ -136,14 +138,14 @@ public class Main {
                     agentBudget[i] = roundData.getAgentBudgets().get(agent);
                     i++;
                 }
-                JFrame speculatorBudgetFrame = new JFrame();
-                speculatorBudgetFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                speculatorBudgetFrame.setTitle("Budget for " + agent.name);
+                JFrame producerBudgetFrame = new JFrame();
+                producerBudgetFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                producerBudgetFrame.setTitle("Budget for " + agent.name);
                 gTitle = ("Three Producer's Summed Budgets");
-                speculatorBudgetFrame.add(new GraphingData(agentBudget, xLabel, yLabel, gTitle));
-                speculatorBudgetFrame.setSize(1000, 1000);
-                speculatorBudgetFrame.setLocation(20, 20);
-                speculatorBudgetFrame.setVisible(true);
+                producerBudgetFrame.add(new GraphingData(agentBudget, xLabel, yLabel, gTitle));
+                producerBudgetFrame.setSize(1000, 1000);
+                producerBudgetFrame.setLocation(20, 20);
+                producerBudgetFrame.setVisible(true);
             }
 
         Commodity[] commodities = roundDataList.get(0).getCommodities();
@@ -162,7 +164,27 @@ public class Main {
             marketPriceFrame.setSize(1000, 1000);
             marketPriceFrame.setLocation(20, 20);
             marketPriceFrame.setVisible(true);
+        
         }
+    	
+    	JFrame avgProdBudgetFrame = new JFrame();
+        avgProdBudgetFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        avgProdBudgetFrame.setTitle("Average Budgets of Producers");
+        gTitle = ("Average Budgets of Producers per Round");
+        avgProdBudgetFrame.add(new GraphingData(Market.budgetArrayP, xLabel, yLabel, gTitle));
+        avgProdBudgetFrame.setSize(1000, 1000);
+        avgProdBudgetFrame.setLocation(20, 20);
+        avgProdBudgetFrame.setVisible(true);
+        
+        JFrame avgSpecBudgetFrame = new JFrame();
+        avgSpecBudgetFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        avgSpecBudgetFrame.setTitle("Average Budgets of Speculators");
+        gTitle = ("Average Budgets of Speculators per Round");
+        avgSpecBudgetFrame.add(new GraphingData(Market.budgetArrayM, xLabel, yLabel, gTitle));
+        avgSpecBudgetFrame.setSize(1000, 1000);
+        avgSpecBudgetFrame.setLocation(20, 20);
+        avgSpecBudgetFrame.setVisible(true);
+    	
     }
 
 }
