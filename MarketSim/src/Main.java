@@ -160,7 +160,7 @@ public class Main {
             marketPriceFrame.setVisible(true);
         
         }
-    	
+
     	JFrame avgProdBudgetFrame = new JFrame();
         avgProdBudgetFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         avgProdBudgetFrame.setTitle("Average Budgets of Producers");
@@ -178,7 +178,7 @@ public class Main {
         avgSpecBudgetFrame.setSize(GRAPH_WIDTH, GRAPH_HEIGHT);
         avgSpecBudgetFrame.setLocation(20, 20);
         avgSpecBudgetFrame.setVisible(true);
-    	
+        
     }
 
 }
