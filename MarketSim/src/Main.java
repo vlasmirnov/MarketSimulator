@@ -18,9 +18,9 @@ public class Main {
 
     public final static Integer COMMODITY_PRICE_FLOOR = 1;
 
-    public final static Integer NUMBER_OF_ROUNDS = 2000;
+    public static Integer NUMBER_OF_ROUNDS = 2000;
 
-    public final static Integer NUMBER_OF_PRODUCERS = 100, NUMBER_OF_SPECULATORS = 20, NUMBER_OF_MINMAX = 0;
+    public static Integer NUMBER_OF_PRODUCERS = 100, NUMBER_OF_SPECULATORS = 0, NUMBER_OF_MINMAX = 0;
 
     public final static Double PRODUCER_STARTING_BUDGET = 1000d;
 
@@ -34,7 +34,13 @@ public class Main {
     private final static Integer PRODUCER_PRODUCTION_STARTING_RATE = 3, PRODUCER_PRODUCTION_INCREASE = 1;
 
 	public static void main(String[] args) throws IOException {
-		
+		if (args.length > 3) {
+            NUMBER_OF_PRODUCERS = Integer.parseInt(args[0]);
+            NUMBER_OF_SPECULATORS = Integer.parseInt(args[1]);
+            NUMBER_OF_MINMAX = Integer.parseInt(args[2]);
+            NUMBER_OF_ROUNDS = Integer.parseInt(args[3]);
+            System.out.println("Simulation started with " + NUMBER_OF_PRODUCERS + " producers, " + NUMBER_OF_SPECULATORS + " trend traders (speculators), and " + NUMBER_OF_MINMAX + " min-max traders.\nIt will run for " + NUMBER_OF_ROUNDS + " rounds.");
+        }
         Market market = new Market();
         
 		File resultsMarketFile = new File("resultsMarket.csv");
@@ -159,8 +165,8 @@ public class Main {
         gTitle = ("Average budgets of Min Max Traders per Round");
         avgMinMaxBudgetFrame.add(new GraphingData(Market.budgetArrayMinMaxers, xLabel, yLabel, gTitle));
         avgMinMaxBudgetFrame.setSize(GRAPH_WIDTH, GRAPH_HEIGHT);
-        avgSpecBudgetFrame.setLocation(20,20);
-        avgSpecBudgetFrame.setVisible(true);
+        avgMinMaxBudgetFrame.setLocation(20,20);
+        avgMinMaxBudgetFrame.setVisible(true);
 
     }
 

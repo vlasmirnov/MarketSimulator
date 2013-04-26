@@ -109,7 +109,7 @@ public class Market {
 			if (agent.name.contains("Citizen"))
 				budgetSumProducers += agent.budget;
 			else if (agent.name.contains("culat")) {
-                budgetSumMinMaxers += agent.budget;
+                budgetSumSpeculators += agent.budget;
             } else {
                 budgetSumMinMaxers += agent.budget;
             }
